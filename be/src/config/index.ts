@@ -1,7 +1,6 @@
 import { config } from 'dotenv';
 
-const envFile = `.env.${process.env.NODE_ENV || 'development'}`;
-config({ path: envFile });
+config(); // cukup ini, otomatis cari file .env di root
 
 export const {
     PORT,
@@ -9,9 +8,6 @@ export const {
     BASE_URL,
     JWT_ACCESS_TOKEN_SECRET,
     JWT_REFRESH_TOKEN_SECRET,
-} = process.env;
-
-export const {
     DB_PORT,
     DB_USERNAME,
     DB_PASSWORD,

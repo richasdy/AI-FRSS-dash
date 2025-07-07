@@ -1,10 +1,7 @@
 import { User } from '@/interfaces/user.interfaces';
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 
-export type UserCreationAttributes = Optional<
-    User,
-    'id' | 'username' 
->;
+export type UserCreationAttributes = Optional<User, 'id' | 'username'>;
 
 export class UserModel
     extends Model<User, UserCreationAttributes>
@@ -13,10 +10,11 @@ export class UserModel
     public id!: string;
     public email!: string;
     public name!: string;
-    public username!: string;
+    public username!: string | null;
     public password!: string;
-    public created_at: string | undefined;
-    public updated_at: string | undefined;
+    public isApproved!: boolean;
+    public created_at!: Date;
+    public updated_at!: Date;
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -27,7 +25,7 @@ export default function (sequelize: Sequelize): typeof UserModel {
         {
             id: {
                 primaryKey: true,
-                type: DataTypes.UUIDV4,
+                type: DataTypes.UUID,
                 defaultValue: DataTypes.UUIDV4,
             },
             email: {
@@ -47,6 +45,11 @@ export default function (sequelize: Sequelize): typeof UserModel {
             password: {
                 allowNull: false,
                 type: DataTypes.STRING(255),
+            },
+            isApproved: {
+                allowNull: false,
+                type: DataTypes.BOOLEAN,
+                defaultValue: false,
             },
             created_at: DataTypes.DATE,
             updated_at: DataTypes.DATE,

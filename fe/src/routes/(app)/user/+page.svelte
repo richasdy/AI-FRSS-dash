@@ -2,6 +2,9 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import { getAllUsers } from './api';
 	import Breadcrumb from '../../../components/breadcrumb/Breadcrumb.svelte';
+	import { roleDummy } from './data';
+	import { approveUser, rejectUser, deleteUser } from './api';
+
 	import {
 	Check,
 		ChevronDown,
@@ -21,17 +24,25 @@
 		X
 
 	} from '@lucide/svelte';
-	import { roleDummy, userDummy } from './data';
 	import Badge from '../../../components/badge/Badge.svelte';
 	import { slide } from 'svelte/transition';
+	import { queryClient } from '$lib/queryClient';
 
-	let searchUsers = '';
-	let openUserFilters = $state(false);
+  let openUserFilters = false;
+  let searchUsers = '';
 
-	// $: usersQuery = createQuery({
-	// 	queryKey: ['users', searchUsers],
-	// 	queryFn: () => getAllUsers(searchUsers)
-	// });
+  const usersQuery = createQuery({
+    queryKey: ['users', searchUsers],
+    queryFn: () => getAllUsers(searchUsers)
+  });
+
+  // ✅ log di reactive statement
+  $: if ($usersQuery.data) {
+    console.log('Users data:', $usersQuery.data);
+  }
+
+
+
 </script>
 
 <div class="flex flex-col gap-y-6">
@@ -260,99 +271,117 @@
 
 					<!-- Table Body -->
 					<tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-						{#each userDummy as user, index}
+						{#if $usersQuery.isLoading}
+						  <tr>
+							<td colspan="9" class="p-4 text-center">Loading...</td>
+						  </tr>
+						{:else if $usersQuery.isError}
+						  <tr>
+							<td colspan="9" class="p-4 text-center">Error loading users</td>
+						  </tr>
+						{:else}
+						  {#each $usersQuery.data as user, index}
 							<tr>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center">
-										<p class="text-theme-sm text-gray-500 dark:text-gray-400">
-											{index + 1}
-										</p>
-									</div>
-								</td>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center">
-										<p class="text-theme-sm text-gray-500 dark:text-gray-400">
-											{user.name}
-										</p>
-									</div>
-								</td>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center">
-										<p class="text-theme-sm text-gray-500 dark:text-gray-400">
-											{user.email}
-										</p>
-									</div>
-								</td>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center">
-										<Badge
-											type={user.role === 'Admin'
-												? 'primary'
-												: user.role === 'User'
-													? 'success'
-													: 'warning'}
-											text={user.role}
-										/>
-									</div>
-								</td>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center">
-										<p class="text-theme-sm text-gray-500 dark:text-gray-400">
-											{user.department}
-										</p>
-									</div>
-								</td>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center gap-x-1">
-										<div
-											class={`h-2 w-2 rounded-full ${user.isOnline ? 'bg-success-500' : 'bg-error-500'}`}
-										></div>
-										<span class="text-theme-sm text-gray-500 dark:text-gray-400">
-											{user.isOnline ? 'Online' : 'Offline'}
-										</span>
-									</div>
-								</td>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center">
-										<p
-											class={`text-theme-sm ${user.isApproved ? 'text-success-500' : 'text-error-500'}`}
+							  <td class="px-5 py-4 sm:px-6">
+								<div class="flex items-center">
+								  <p class="text-theme-sm text-gray-500 dark:text-gray-400">{index + 1}</p>
+								</div>
+							  </td>
+							  <td class="px-5 py-4 sm:px-6">
+								<div class="flex items-center">
+								  <p class="text-theme-sm text-gray-500 dark:text-gray-400">{user.name}</p>
+								</div>
+							  </td>
+							  <td class="px-5 py-4 sm:px-6">
+								<div class="flex items-center">
+								  <p class="text-theme-sm text-gray-500 dark:text-gray-400">{user.email}</p>
+								</div>
+							  </td>
+							  <td class="px-5 py-4 sm:px-6">
+								<div class="flex items-center">
+								  <Badge
+									type={user.role === 'Admin' ? 'primary' : user.role === 'User' ? 'success' : 'warning'}
+									text={user.role}
+								  />
+								</div>
+							  </td>
+							  <td class="px-5 py-4 sm:px-6">
+								<div class="flex items-center">
+								  <p class="text-theme-sm text-gray-500 dark:text-gray-400">{user.department}</p>
+								</div>
+							  </td>
+							  <td class="px-5 py-4 sm:px-6">
+								<div class="flex items-center gap-x-1">
+								  <div
+									class={`h-2 w-2 rounded-full ${user.isOnline ? 'bg-success-500' : 'bg-error-500'}`}
+								  ></div>
+								  <span class="text-theme-sm text-gray-500 dark:text-gray-400">
+									{user.isOnline ? 'Online' : 'Offline'}
+								  </span>
+								</div>
+							  </td>
+							  <td class="px-5 py-4 sm:px-6">
+								<div class="flex items-center">
+								  <p
+									class={`text-theme-sm ${user.isApproved ? 'text-success-500' : 'text-error-500'}`}
+								  >
+									{user.isApproved ? 'Approved' : 'Pending'}
+								  </p>
+								</div>
+							  </td>
+							  <td class="px-5 py-4 sm:px-6">
+								<div class="flex items-center">
+								  <p class="text-theme-sm text-gray-500 dark:text-gray-400">{user.lastLogin}</p>
+								</div>
+							  </td>
+							  <td class="px-5 py-4 sm:px-6">
+								<div class="flex items-center gap-x-2">
+									{#if user.isApproved}
+										<button aria-label="actionButton" class="btn-secondary-icon">
+											<PencilLine class="h-4 w-4" />
+										</button>
+										<button aria-label="actionButton" class="btn-secondary-icon">
+											<Key class="h-4 w-4" />
+										</button>
+										<button
+											aria-label="actionButton"
+											class="btn-secondary-icon"
+											onclick={async () => {
+												await deleteUser(user.id);
+												await queryClient.invalidateQueries({ queryKey: ['users', searchUsers] });
+											}}
 										>
-											{user.isApproved ? 'Approved' : 'Pending'}
-										</p>
-									</div>
-								</td>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center">
-										<p class="text-theme-sm text-gray-500 dark:text-gray-400">
-											{user.lastLogin}
-										</p>
-									</div>
-								</td>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center gap-x-2">
-										{#if user.isApproved}
-											<button aria-label="actionButton" class="btn-secondary-icon">
-												<PencilLine class="h-4 w-4" />
-											</button>
-											<button aria-label="actionButton" class="btn-secondary-icon">
-												<Key class="h-4 w-4" />
-											</button>
-											<button aria-label="actionButton" class="btn-secondary-icon">
-												<Trash class="h-4 w-4" />
-											</button>
-										{:else}
-											<button aria-label="actionButton" class="btn-secondary-icon">
-												<Check class="h-4 w-4" />
-											</button>
-											<button aria-label="actionButton" class="btn-secondary-icon">
-												<X class="h-4 w-4" />
-											</button>
-										{/if}
-									</div>
-								</td>
+											<Trash class="h-4 w-4" />
+										</button>
+									{:else}
+										<button
+											aria-label="actionButton"
+											class="btn-secondary-icon"
+											onclick={async () => {
+												await approveUser(user.id);
+												await queryClient.invalidateQueries({ queryKey: ['users', searchUsers] });
+											}}
+										>
+											<Check class="h-4 w-4" />
+										</button>
+										<button
+											aria-label="actionButton"
+											class="btn-secondary-icon"
+											onclick={async () => {
+												await rejectUser(user.id);
+												await queryClient.invalidateQueries({ queryKey: ['users', searchUsers] });
+											}}
+										>
+											<X class="h-4 w-4" />
+										</button>
+									{/if}
+								</div>
+							</td>							
 							</tr>
-						{/each}
-					</tbody>
+						  {/each}
+						{/if}
+					  </tbody>					  
+					
 					<!-- Table Body -->
 				</table>
 			</div>

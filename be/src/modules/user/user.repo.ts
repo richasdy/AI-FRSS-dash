@@ -1,22 +1,46 @@
-import { DB } from '@/database';
+import prisma from '@/lib/prisma';
 import { User } from '@/interfaces/user.interfaces';
 
 export const repo = {
-    getUserProfile: async (
-        userId: string | undefined,
-    ): Promise<User | null> => {
-        return await DB.Users.findOne({ where: { id: userId } });
-    },
+  getUserProfile: async (userId: string | undefined): Promise<User | null> => {
+    if (!userId) return null;
 
-    getAllUsers: async (search: string): Promise<User[]> => {
-        let users =  await DB.Users.findAll({
-            where: {
-                name: {
-                    [DB.Sequelize.Op.like]: `%${search ?? ''}%`
-                }
-            },
-        });
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
 
-        return users;
+    if (!user) return null;
+
+    const { createdAt, updatedAt, ...rest } = user;
+
+    return {
+      ...rest,
+      created_at: createdAt,
+      updated_at: updatedAt,
+    };
+  },
+
+  getAllUsers: async (search: string): Promise<User[]> => {
+    let whereCondition = {};
+
+    if (search && search.trim() !== '') {
+      whereCondition = {
+        name: {
+          not: null,
+          contains: search,
+          mode: 'insensitive',
+        },
+      };
     }
+
+    const users = await prisma.user.findMany({
+      where: whereCondition,
+    });
+    console.log('Prisma users:', users);
+    return users.map(({ createdAt, updatedAt, ...rest }) => ({
+      ...rest,
+      created_at: createdAt,
+      updated_at: updatedAt,
+    }));
+  },
 };

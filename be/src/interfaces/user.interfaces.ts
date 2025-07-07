@@ -1,9 +1,11 @@
 export interface User {
-    id?: string;
+    id: string;
     email: string;
-    name: string;
-    username: string;
+    name: string | null;
+    username: string | null;
     password: string;
-    created_at: string | undefined;
-    updated_at: string | undefined;
-}
+    isApproved: boolean;
+    created_at: Date;
+    updated_at: Date;
+  }
+  

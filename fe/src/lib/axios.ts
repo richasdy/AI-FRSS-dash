@@ -10,6 +10,11 @@ api.interceptors.request.use(
 		if (token) {
 			config.headers['Authorization'] = token;
 		}
+		// 💥 Tambahkan header anti cache
+		config.headers['Cache-Control'] = 'no-cache';
+		config.headers['Pragma'] = 'no-cache';
+		config.headers['If-Modified-Since'] = '0';
+
 		return config;
 	},
 	(error) => {

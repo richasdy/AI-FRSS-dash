@@ -13,6 +13,22 @@
 	} from './data';
 
 	let feedsGrid: number = $state(2);
+
+	const videoSources = [
+	'/video/vid1.mp4',
+	'/video/vid2.mp4',
+	'/video/vid3.mp4',
+	'/video/vid4.mp4',
+	'/video/vid5.mp4',
+	'/video/vid6.mp4',
+	'/video/vid7.mp4',
+	'/video/vid8.mp4',
+	'/video/vid9.mp4',
+	'/video/vid10.mp4'
+];
+
+
+
 </script>
 
 <div class="flex flex-col gap-y-6">
@@ -40,15 +56,20 @@
 			</div>
 		</div>
 		<div class={`grid ${gridClassMap[feedsGrid]} gap-2 px-6 py-5`}>
-			{#each monitoringDummy as monitoring}
+			{#each monitoringDummy as monitoring, i}
 				<div
 					class={`relative max-h-56 overflow-hidden border border-gray-200 dark:border-gray-800 ${feedsGrid !== 4 ? 'rounded-xl' : 'rounded-lg'}`}
 				>
-					<img
-						src="https://www.computerworld.com/wp-content/uploads/2024/03/google-meet-shutterstock_1903207828-100916819-orig.jpg?quality=50&strip=all"
-						alt="Camera Feed"
-						class="relative h-full w-full object-cover"
-					/>
+				<video
+					src={videoSources[i % videoSources.length]}
+					autoplay
+					muted
+					loop
+					playsinline
+					class="relative h-full w-full object-cover"
+					onerror={() => console.log('Video gagal load')}
+				></video>
+
 					<div class="absolute top-0 left-0 h-full w-full bg-gray-800/50"></div>
 					<div class="absolute bottom-0 px-4 pb-4">
 						<p class="text-theme-lg font-medium text-white">{monitoring.name}</p>

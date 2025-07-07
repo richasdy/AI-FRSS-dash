@@ -1,5 +1,5 @@
+import { Sequelize } from 'sequelize';
 import logger from '@/utils/logger';
-import Sequelize from 'sequelize';
 import userModel from './models/user.model';
 import {
     DB_DIALECT,
@@ -11,12 +11,12 @@ import {
     NODE_ENV,
 } from '@/config';
 
-const sequelize = new Sequelize.Sequelize(
+const sequelize = new Sequelize(
     DB_NAME as string,
     DB_USERNAME as string,
     DB_PASSWORD,
     {
-        dialect: (DB_DIALECT as Sequelize.Dialect) || 'postgres',
+        dialect: (DB_DIALECT as any) || 'mysql', // ✅ fix di sini
         host: DB_HOST,
         port: parseInt(DB_PORT as string, 10),
         timezone: '+09:00',
@@ -32,16 +32,23 @@ const sequelize = new Sequelize.Sequelize(
         },
         logQueryParameters: NODE_ENV === 'development',
         logging: (query, time) => {
-            logger.info(time + 'ms' + ' ' + query);
+            logger.info(`${time}ms ${query}`);
         },
         benchmark: true,
     },
 );
 
-sequelize.authenticate();
+(async () => {
+    try {
+        await sequelize.authenticate();
+        logger.info('Database connection established ✅');
+    } catch (error) {
+        logger.error('Unable to connect to the database ❌', error);
+    }
+})();
 
 export const DB = {
     Users: userModel(sequelize),
-    sequelize, // connection instance (RAW queries)
-    Sequelize, // library
+    sequelize,
+    Sequelize,
 };
