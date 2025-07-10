@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onDestroy } from 'svelte';
 	import { Check, ChevronDown, Clock, MapPin, Maximize } from '@lucide/svelte';
 	import Breadcrumb from '../../../components/breadcrumb/Breadcrumb.svelte';
 	import {
@@ -14,32 +15,51 @@
 
 	let feedsGrid: number = $state(2);
 
-	const videoSources = [
-	'/video/vid1.mp4',
-	'/video/vid2.mp4',
-	'/video/vid3.mp4',
-	'/video/vid4.mp4',
-	'/video/vid5.mp4',
-	'/video/vid6.mp4',
-	'/video/vid7.mp4',
-	'/video/vid8.mp4',
-	'/video/vid9.mp4',
-	'/video/vid10.mp4'
-];
+	const cameraSnapshots = [
+		'http://185.97.122.128:80/cgi-bin/faststream.jpg?stream=half&fps=15&rand=COUNTER',
+		'http://85.220.149.7:80/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER',
+		'http://80.151.142.110:8080/?action=stream',
+		'http://87.139.153.80:80/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER',
+		'http://37.182.240.202:82/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER',
+		'http://91.113.207.170:80/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER',
+		'http://86.121.159.16:80/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER',
+		'http://151.14.98.27:80/jpgmulreq/1/image.jpg?key=1516975535684&amp;lq=1&amp;1752166261',
+		'http://77.89.48.24:89/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER',
+		'http://82.187.186.77:80/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER'
+	];
 
+	const imageUrls: string[] = Array(cameraSnapshots.length).fill('');
+	const intervals: any[] = [];
 
+	function startRefreshing() {
+		cameraSnapshots.forEach((baseUrl, index) => {
+			if (baseUrl.includes('mjpg')) {
+				imageUrls[index] = baseUrl;
+			} else {
+				function refresh() {
+					const rand = Math.floor(Math.random() * 100000);
+					imageUrls[index] = `${baseUrl}?rand=${rand}`;
+				}
+				refresh();
+				const intervalId = setInterval(refresh, 1000);
+				intervals.push(intervalId);
+			}
+		});
+	}
+
+	startRefreshing();
+
+	onDestroy(() => {
+		intervals.forEach(clearInterval);
+	});
 
 </script>
 
 <div class="flex flex-col gap-y-6">
 	<Breadcrumb pageName="Live Monitoring" />
 	<!-- Camera Feeds -->
-	<div
-		class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]"
-	>
-		<div
-			class="flex flex-col gap-y-2 border-b border-gray-100 px-6 py-4 md:flex-row md:items-center md:justify-between dark:border-gray-800"
-		>
+	<div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+		<div class="flex flex-col gap-y-2 border-b border-gray-100 px-6 py-4 md:flex-row md:items-center md:justify-between dark:border-gray-800">
 			<h3 class="text-base font-medium text-gray-800 dark:text-white/90">Live Camera Feeds</h3>
 			<div class="flex items-center gap-x-2">
 				{#each feedGridTabs as grid}
@@ -49,7 +69,6 @@
 						onclick={() => (feedsGrid = grid.value)}
 					>
 						<grid.icon class="h-4 w-4" />
-
 						{grid.label}
 					</button>
 				{/each}
@@ -60,16 +79,22 @@
 				<div
 					class={`relative max-h-56 overflow-hidden border border-gray-200 dark:border-gray-800 ${feedsGrid !== 4 ? 'rounded-xl' : 'rounded-lg'}`}
 				>
-				<video
-					src={videoSources[i % videoSources.length]}
-					autoplay
-					muted
-					loop
-					playsinline
-					class="relative h-full w-full object-cover"
-					onerror={() => console.log('Video gagal load')}
-				></video>
-
+					{#if cameraSnapshots[i % cameraSnapshots.length].includes('mjpg')}
+						<video
+							src={imageUrls[i % imageUrls.length]}
+							autoplay
+							muted
+							loop
+							playsinline
+							class="relative h-full w-full object-cover"
+						></video>
+					{:else}
+						<img
+							src={imageUrls[i % imageUrls.length]}
+							alt="Live Camera"
+							class="relative h-full w-full object-cover"
+						/>
+					{/if}
 					<div class="absolute top-0 left-0 h-full w-full bg-gray-800/50"></div>
 					<div class="absolute bottom-0 px-4 pb-4">
 						<p class="text-theme-lg font-medium text-white">{monitoring.name}</p>
