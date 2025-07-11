@@ -8,7 +8,7 @@ import { errorHandler } from './utils/error-handler';
 import { swaggerSpec, swaggerUi } from './utils/swagger';
 
 const appServer = express();
-const port = PORT;
+const port = Number(PORT) || 3000;
 
 const corsOptions = {
     origin: '*',
@@ -56,8 +56,8 @@ DB.sequelize
     .authenticate()
     .then(() => {
         logger.info('Database connected successfully!');
-        appServer.listen(port, () => {
-            logger.info(`Server is running on http://localhost:${port}`);
+        appServer.listen(port, '0.0.0.0', () => {
+            logger.info(`Server is running on http://0.0.0.0:${port}`);
         });
     })
     .catch(error => {
