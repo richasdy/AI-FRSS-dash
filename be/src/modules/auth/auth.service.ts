@@ -1,4 +1,4 @@
-import type { UserCreationData } from '@/interfaces/user.interfaces';
+import type { UserCreationData, User } from '@/interfaces/user.interfaces';
 import { validateSignIn, validateSignUp } from './auth.validator';
 import repo from './auth.repo';
 import { compareSync, hash } from 'bcrypt';
