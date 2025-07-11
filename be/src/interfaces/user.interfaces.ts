@@ -9,3 +9,12 @@ export interface User {
     updated_at: Date;
   }
   
+  export type UserCreationData = {
+    email: string;
+    name?: string | null;
+    username: string;
+    password: string;
+    isApproved?: boolean;
+  };
+  
+  

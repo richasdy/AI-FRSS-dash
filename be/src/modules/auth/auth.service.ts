@@ -1,4 +1,4 @@
-import { User } from '@/interfaces/user.interfaces';
+import type { UserCreationData } from '@/interfaces/user.interfaces';
 import { validateSignIn, validateSignUp } from './auth.validator';
 import repo from './auth.repo';
 import { compareSync, hash } from 'bcrypt';
@@ -6,7 +6,7 @@ import { generateJWT } from '@/middlewares/jwt.service';
 import { JWT_ACCESS_TOKEN_SECRET } from '@/config';
 import { CustomError } from '@/utils/custom-error';
 
-export const signUpService = async (userData: User) => {
+export const signUpService = async (userData: UserCreationData) => {
     const { error } = validateSignUp(userData);
     if (error) {
         throw new CustomError(error.details[0].message, 400);
@@ -17,18 +17,18 @@ export const signUpService = async (userData: User) => {
         throw new CustomError(`Email ${userData.email} already exists`, 409);
     }
 
-    const randomId = (Date.now() + Math.floor(Math.random() * 100)).toString(
-        36,
-    );
+    const randomId = (Date.now() + Math.floor(Math.random() * 100)).toString(36);
     const username = `${userData.email.split('@')[0]}-${randomId}`;
     const hashedPassword = await hash(userData.password, 10);
-    const newUserData = await repo.createUser({
-        ...userData,
+
+    const newUser = await repo.createUser({
+        email: userData.email,
+        name: userData.name,
         username,
         password: hashedPassword,
     });
 
-    return { user: newUserData };
+    return { user: newUser };
 };
 
 export const signInService = async (userData: User) => {
