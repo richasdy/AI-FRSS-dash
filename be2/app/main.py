@@ -5,7 +5,6 @@ from transformers import BertTokenizer, BertModel, pipeline
 from PIL import Image, ImageDraw
 import io
 import base64
-import torch
 
 app = FastAPI()
 
@@ -13,6 +12,7 @@ app = FastAPI()
 async def root():
     return {"message": "API is running! 🎉 Check /docs for endpoints."}
 
+# Middleware CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,20 +21,23 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+# Load BERT model & tokenizer
 tokenizer = BertTokenizer.from_pretrained('indobenchmark/indobert-base-p1')
 bert_model = BertModel.from_pretrained('indobenchmark/indobert-base-p1')
 
+# Load object detection pipeline (DETR)
 object_detector = pipeline("object-detection", model="facebook/detr-resnet-50")
 
+# WebSocket untuk teks/BERT
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
         while True:
             data = await websocket.receive_text()
+            print("Diterima:", data)
             inputs = tokenizer(data, return_tensors="pt")
-            with torch.no_grad():
-                outputs = bert_model(**inputs)
+            outputs = bert_model(**inputs)
             pooled = outputs.pooler_output.detach().numpy().tolist()
             await websocket.send_text(f"Embedding shape: {len(pooled)}x{len(pooled[0])}")
     except Exception as e:
@@ -42,22 +45,20 @@ async def websocket_endpoint(websocket: WebSocket):
     finally:
         await websocket.close()
 
+# REST API untuk encode teks dengan BERT
 @app.post("/encode")
 async def encode_text(request: Request):
     data = await request.json()
     text = data.get("text", "")
     inputs = tokenizer(text, return_tensors="pt")
-    with torch.no_grad():
-        outputs = bert_model(**inputs)
+    outputs = bert_model(**inputs)
     pooled = outputs.pooler_output.detach().numpy().tolist()
     return {"embedding": pooled}
 
+# REST API untuk deteksi objek pada gambar (upload file)
 @app.post("/process-image")
 async def process_image(file: UploadFile = File(...)):
-    try:
-        image = Image.open(io.BytesIO(await file.read())).convert("RGB")
-    except Exception as e:
-        return {"error": f"Invalid image: {str(e)}"}
+    image = Image.open(io.BytesIO(await file.read())).convert("RGB")
     results = object_detector(image)
     draw = ImageDraw.Draw(image)
     for obj in results:
@@ -68,6 +69,7 @@ async def process_image(file: UploadFile = File(...)):
     buf.seek(0)
     return StreamingResponse(buf, media_type="image/png")
 
+# WebSocket untuk deteksi objek pada gambar (base64)
 @app.websocket("/ws-image")
 async def websocket_image(websocket: WebSocket):
     await websocket.accept()
