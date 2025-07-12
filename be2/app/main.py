@@ -8,6 +8,11 @@ import base64
 
 app = FastAPI()
 
+# Tambahkan endpoint root supaya tidak error di browser
+@app.get("/")
+async def root():
+    return {"message": "API is running! 🎉 Check /docs for endpoints."}
+
 # Middleware CORS
 app.add_middleware(
     CORSMiddleware,
@@ -17,14 +22,14 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-# Load BERT model & tokenizer
+# oad BERT
 tokenizer = BertTokenizer.from_pretrained('indobenchmark/indobert-base-p1')
 bert_model = BertModel.from_pretrained('indobenchmark/indobert-base-p1')
 
-# Load object detection pipeline (DETR)
+# Load object detector
 object_detector = pipeline("object-detection", model="facebook/detr-resnet-50")
 
-# WebSocket untuk teks/BERT
+# WebSocket BERT
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -41,7 +46,7 @@ async def websocket_endpoint(websocket: WebSocket):
     finally:
         await websocket.close()
 
-# REST API untuk encode teks dengan BERT
+# Encode teks via POST
 @app.post("/encode")
 async def encode_text(request: Request):
     data = await request.json()
@@ -51,7 +56,7 @@ async def encode_text(request: Request):
     pooled = outputs.pooler_output.detach().numpy().tolist()
     return {"embedding": pooled}
 
-# REST API untuk deteksi objek pada gambar (upload file)
+# Upload gambar via REST
 @app.post("/process-image")
 async def process_image(file: UploadFile = File(...)):
     image = Image.open(io.BytesIO(await file.read())).convert("RGB")
@@ -65,7 +70,7 @@ async def process_image(file: UploadFile = File(...)):
     buf.seek(0)
     return StreamingResponse(buf, media_type="image/png")
 
-# WebSocket untuk deteksi objek pada gambar (base64)
+# WebSocket gambar base64
 @app.websocket("/ws-image")
 async def websocket_image(websocket: WebSocket):
     await websocket.accept()

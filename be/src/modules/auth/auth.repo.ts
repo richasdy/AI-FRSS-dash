@@ -9,7 +9,7 @@ const repo = {
     createUser: async (userData: UserCreationData): Promise<User> => {
         return await DB.Users.create({
             ...userData,
-            isApproved: false // default jika belum diset
+            isApproved: false 
         } as any);
     },    
 };
