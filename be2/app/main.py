@@ -12,6 +12,7 @@ app = FastAPI()
 async def root():
     return {"message": "API is running! 🎉 Check /docs for endpoints."}
 
+
 # Middleware CORS
 app.add_middleware(
     CORSMiddleware,

@@ -31,7 +31,7 @@ export const signUpService = async (userData: UserCreationData) => {
     return { user: newUser };
 };
 
-export const signInService = async (userData: User) => {
+export const signInService = async (userData: UserCreationData) => {
     const { error } = validateSignIn(userData);
     if (error) {
         throw new CustomError(error.details[0].message, 400);
