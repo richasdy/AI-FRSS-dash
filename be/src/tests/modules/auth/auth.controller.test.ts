@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { signUpController, signInController } from '../../../src/modules/auth/auth.controller';
-import { signUpService, signInService } from '../../../src/modules/auth/auth.service';
+import { signUpController, signInController } from '@modules/auth/auth.controller';
+import { signUpService, signInService } from '@modules/auth/auth.service';
 
 jest.mock('../../../src/modules/auth/auth.service', () => ({
     signUpService: jest.fn(),

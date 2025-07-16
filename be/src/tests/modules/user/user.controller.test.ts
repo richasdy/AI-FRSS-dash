@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { getUserProfileController } from '../../../src/modules/user/user.controller';
-import { getUserProfileService } from '../../../src/modules/user/user.service';
-import { CustomError } from '../../../src/utils/custom-error';
+import { getUserProfileController } from '@modules/user/user.controller';
+import { getUserProfileService } from '@modules/user/user.service';
+import { CustomError } from '@utils/custom-error';
 
 jest.mock('../../../src/modules/user/user.service', () => ({
     getUserProfileService: jest.fn(),

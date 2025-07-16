@@ -1,14 +1,14 @@
 import {
     signUpService,
     signInService,
-} from '../../../src/modules/auth/auth.service';
-import { CustomError } from '../../../src/utils/custom-error';
-import repo from '../../../src/modules/auth/auth.repo';
-import { User, UserCreationData } from '../../../src/interfaces/user.interfaces';
-import { DB } from '../../../src/database';
+} from '@modules/auth/auth.service';
+import { CustomError } from '@utils/custom-error';
+import repo from '@modules/auth/auth.repo';
+import { User, UserCreationData } from '@/interfaces/user.interfaces';
+import { DB } from '@database/index';
 import { hash } from 'bcrypt';
-import { validateSignUp, validateSignIn } from '../../../src/modules/auth/auth.validator';
-import { generateJWT } from '../../../src/middlewares/jwt.service';
+import { validateSignUp, validateSignIn } from '@modules/auth/auth.validator';
+import { generateJWT } from '@/middlewares/jwt.service';
 
 jest.mock('../../../src/modules/auth/auth.repo');
 jest.mock('../../../src/database', () => ({

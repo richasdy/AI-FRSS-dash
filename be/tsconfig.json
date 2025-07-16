@@ -3,7 +3,7 @@
         "target": "es6",
         "module": "commonjs",
         "outDir": "./dist",
-        "rootDir": "./",
+        "rootDir": "./src",
         "baseUrl": "./src",
         "paths": {
             "@/*": ["*"],
@@ -11,7 +11,10 @@
             "@database/*": ["database/*"],
             "@utils/*": ["utils/*"],
             "@types/*": ["types/*"],
-            "@modules/*": ["modules/*"]
+            "@modules/*": ["modules/*"],
+            "@config/*": ["config/*"],
+            "@middlewares/*": ["middlewares/*"],
+        "@interfaces/*": ["interfaces/*"]
         },
         "esModuleInterop": true,
         "typeRoots": ["node_modules/@types"],
@@ -21,6 +24,6 @@
         "skipLibCheck": true,
         "lib": ["esnext", "dom"]
     },
-    "include": ["src/**/*.ts", "src/database/models/index.ts", "tests/**/*.ts"],  // ✅ pastikan tests juga di-include
+    "include": ["src/**/*.ts"],  // ✅ pastikan tests juga di-include
     "exclude": ["node_modules"]
 }

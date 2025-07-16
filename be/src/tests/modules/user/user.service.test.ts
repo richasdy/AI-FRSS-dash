@@ -1,8 +1,8 @@
-import { getUserProfileService } from '../../../src/modules/user/user.service';
-import { verifyJWT } from '../../../src/middlewares/jwt.service';
-import { repo } from '../../../src/modules/user/user.repo';
-import { CustomError } from '../../../src/utils/custom-error';
-import { JWT_ACCESS_TOKEN_SECRET } from '../../../src/config/index';
+import { getUserProfileService } from '@modules/user/user.service';
+import { verifyJWT } from '@/middlewares/jwt.service';
+import { repo } from '@modules/user/user.repo';
+import { CustomError } from '@utils/custom-error';
+import { JWT_ACCESS_TOKEN_SECRET } from '@config/index';
 
 jest.mock('../../../src/middlewares/jwt.service');
 jest.mock('../../../src/modules/user/user.repo');

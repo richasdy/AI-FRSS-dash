@@ -15,8 +15,8 @@ module.exports = {
   password: DB_PASSWORD || '',
   database: DB_NAME || 'sv-fs',
   host: DB_HOST || '127.0.0.1',
-  port: DB_PORT || 3306,
-  dialect: DB_DIALECT || 'mysql',
+  port: DB_PORT || 5432,
+  dialect: DB_DIALECT || 'postgres',
   migrationStorageTableName: 'sequelize_migrations',
   seederStorageTableName: 'sequelize_seeds',
 };
