@@ -1,22 +1,22 @@
 {
   "development": {
     "username": "postgres",
-    "password": "",
-    "database": "sv-fs_dev",
+    "password": "root123",
+    "database": "sv_fs_dev",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "test": {
     "username": "postgres",
-    "password": "",
-    "database": "sv-fs_test",
+    "password": "root123",
+    "database": "sv_fs_test",
     "host": "127.0.0.1",
     "dialect": "postgres"
   },
   "production": {
     "username": "postgres",
-    "password": "",
-    "database": "sv-fs_prod",
+    "password": "root123",
+    "database": "sv_fs_prod",
     "host": "127.0.0.1",
     "dialect": "postgres"
   }

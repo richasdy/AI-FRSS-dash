@@ -12,8 +12,8 @@ const {
 
 module.exports = {
   username: DB_USERNAME || 'root',
-  password: DB_PASSWORD || '',
-  database: DB_NAME || 'sv-fs',
+  password: DB_PASSWORD || 'root123',
+  database: DB_NAME || 'sv_fs',
   host: DB_HOST || '127.0.0.1',
   port: DB_PORT || 5432,
   dialect: DB_DIALECT || 'postgres',
