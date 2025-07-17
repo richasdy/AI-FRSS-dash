@@ -56,7 +56,7 @@ async def encode_text(request: Request):
     pooled = outputs.pooler_output.detach().numpy().tolist()
     return {"embedding": pooled}
 
-# REST API untuk deteksi objek pada gambar (upload file)
+# REST API untuk deteksi objek pada gambar! (upload file) 
 @app.post("/process-image")
 async def process_image(file: UploadFile = File(...)):
     image = Image.open(io.BytesIO(await file.read())).convert("RGB")
