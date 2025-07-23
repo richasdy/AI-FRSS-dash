@@ -1,7 +1,30 @@
 import json
 import math
+from fastapi import APIRouter, HTTPException
+from fastapi.responses import JSONResponse
 from models import faces as model_face
 
+router = APIRouter(prefix="/faces", tags=["Face Recognition"])
+
+@router.get("/")
+async def get_faces():
+    """Get all registered faces"""
+    try:
+        # Placeholder implementation
+        return {"message": "Face recognition endpoints", "status": "available"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/recognize")
+async def recognize_face():
+    """Face recognition endpoint"""
+    try:
+        # Placeholder implementation
+        return {"message": "Face recognition not implemented yet"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Utility functions
 def calculate_euclidean_distance(a, b):
     return math.sqrt(sum((x - y) ** 2 for x, y in zip(a, b)))
 

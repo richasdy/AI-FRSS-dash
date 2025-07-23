@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-FRSS WebSocket Test Client</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            color: #333;
+        }
+        h1, h3, h4, h5, p, strong, label {
+            color: #333 !important;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .connected {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .disconnected {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .control-group {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .log {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .image-preview {
+            max-width: 100%;
+            max-height: 400px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .detection-info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px 0;
+        }
+        .detection-item {
+            background: #f0f8ff;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border-left: 4px solid #007bff;
+            font-size: 14px;
+            color: #333;
+        }
+        .detection-class {
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .detection-confidence {
+            color: #27ae60;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        .detection-bbox {
+            color: #7f8c8d;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+        .legend {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #333 !important;
+        }
+        .legend h5 {
+            color: #856404 !important;
+            margin: 0 0 10px 0;
+            font-size: 14px;
+        }
+        .legend-item {
+            display: inline-block;
+            margin: 5px 10px 5px 0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white !important;
+        }
+        .legend-intrusion { background: #ff6b6b; }
+        .legend-people { background: #4ecdc4; }
+        .legend-security { background: #ff9f43; }
+        .legend-vehicle { background: #a55eea; }
+        .legend-confidence { background: #27ae60; }
+        .legend-bbox { background: #7f8c8d; }
+        .legend-text {
+            color: #333 !important;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 AI-FRSS WebSocket Test Client</h1>
+        
+        <div id="status" class="status disconnected">
+            ❌ Disconnected
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <h3>🔗 Connection Settings</h3>
+                <label for="modelSelect">Detection Model:</label>
+                <select id="modelSelect">
+                    <option value="intrusion">🔍 Intrusion Detection</option>
+                    <option value="people">👥 People Detection</option>
+                    <option value="security_threats">🔫 Security Threats</option>
+                    <option value="vehicle">🚗 Vehicle Detection</option>
+                    <option value="all">🌟 Multi-Model (All)</option>
+                </select>
+                
+                <button id="connectBtn" onclick="toggleConnection()">Connect</button>
+                <button id="pingBtn" onclick="sendPing()" disabled>Send Ping</button>
+            </div>
+            
+            <div class="control-group">
+                <h3>📷 Image Detection</h3>
+                <label for="imageInput">Select Image:</label>
+                <input type="file" id="imageInput" accept="image/*" onchange="handleImageSelect(event)">
+                
+                <label for="confidenceSlider">Confidence Threshold: <span id="confidenceValue">0.5</span></label>
+                <input type="range" id="confidenceSlider" min="0.1" max="1.0" step="0.1" value="0.5" 
+                       onchange="updateConfidence(this.value)">
+                
+                <label>
+                    <input type="checkbox" id="drawBoxes" checked> Draw Bounding Boxes
+                </label>
+                
+                <button id="detectBtn" onclick="sendImageDetection()" disabled>🔍 Detect Objects</button>
+            </div>
+        </div>
+        
+        <div class="results">
+            <h3>📊 Detection Results</h3>
+            <div id="detectionResults">
+                <p>No detections yet. Connect and send an image for detection.</p>
+            </div>
+            
+            <div id="imageContainer">
+                <!-- Original and result images will appear here -->
+            </div>
+        </div>
+        
+        <div class="results">
+            <h3>📝 Console Log</h3>
+            <div id="log" class="log">
+                Welcome to AI-FRSS WebSocket Test Client!<br>
+                Select a model and click Connect to start...<br>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let isConnected = false;
+        let currentImage = null;
+        
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}<br>`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function updateStatus(connected) {
+            const statusElement = document.getElementById('status');
+            const connectBtn = document.getElementById('connectBtn');
+            const pingBtn = document.getElementById('pingBtn');
+            const detectBtn = document.getElementById('detectBtn');
+            
+            isConnected = connected;
+            
+            if (connected) {
+                statusElement.textContent = '✅ Connected';
+                statusElement.className = 'status connected';
+                connectBtn.textContent = 'Disconnect';
+                pingBtn.disabled = false;
+                detectBtn.disabled = !currentImage;
+            } else {
+                statusElement.textContent = '❌ Disconnected';
+                statusElement.className = 'status disconnected';
+                connectBtn.textContent = 'Connect';
+                pingBtn.disabled = true;
+                detectBtn.disabled = true;
+            }
+        }
+        
+        function toggleConnection() {
+            if (isConnected) {
+                disconnect();
+            } else {
+                connect();
+            }
+        }
+        
+        function connect() {
+            const model = document.getElementById('modelSelect').value;
+            let wsUrl;
+            
+            if (model === 'all') {
+                wsUrl = 'ws://localhost:8000/ws/detection-all';
+            } else {
+                wsUrl = `ws://localhost:8000/ws/detection/${model}`;
+            }
+            
+            log(`Connecting to ${wsUrl}...`);
+            
+            ws = new WebSocket(wsUrl);
+            
+            ws.onopen = function(event) {
+                log('✅ WebSocket connection established');
+                updateStatus(true);
+            };
+            
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                log(`📨 Received: ${data.type}`);
+                handleMessage(data);
+            };
+            
+            ws.onclose = function(event) {
+                log('❌ WebSocket connection closed');
+                updateStatus(false);
+            };
+            
+            ws.onerror = function(error) {
+                log('🚨 WebSocket error occurred');
+                updateStatus(false);
+            };
+        }
+        
+        function disconnect() {
+            if (ws) {
+                ws.close();
+                ws = null;
+            }
+        }
+        
+        function handleMessage(data) {
+            switch(data.type) {
+                case 'connection_established':
+                    log(`🎉 Connected to ${data.model} detection service`);
+                    break;
+                    
+                case 'detection_result':
+                case 'multi_detection_result':
+                    handleDetectionResult(data);
+                    break;
+                    
+                case 'pong':
+                    log(`🏓 Pong received - Loaded models: ${data.loaded_models?.join(', ') || 'N/A'}`);
+                    break;
+                    
+                case 'error':
+                    log(`🚨 Error: ${data.message}`);
+                    break;
+                    
+                case 'model_changed':
+                    log(`🔄 Model changed to: ${data.new_model}`);
+                    break;
+                    
+                default:
+                    log(`📋 Unknown message type: ${data.type}`);
+            }
+        }
+        
+        function handleDetectionResult(data) {
+            const resultsDiv = document.getElementById('detectionResults');
+            const imageContainer = document.getElementById('imageContainer');
+            
+            // Debug logging
+            console.log('🔍 Detection Result Data:', data);
+            
+            let html = '';
+            
+            if (data.type === 'detection_result') {
+                // Single model result
+                html = `
+                    <div class="detection-info">
+                        <h4>🎯 Model: ${data.model_used}</h4>
+                        <p><strong>Detections Found:</strong> ${data.detections_count}</p>
+                        <p><strong>Image Size:</strong> ${data.image_size?.width}x${data.image_size?.height}</p>
+                    </div>
+                `;
+                
+                if (data.detections_count > 0) {
+                    html += '<h5>🔍 Detection Details:</h5>';
+                    data.detections.forEach((detection, index) => {
+                        const confidencePercentage = (detection.confidence * 100).toFixed(1);
+                        const confidenceColor = detection.confidence > 0.8 ? '#27ae60' : 
+                                               detection.confidence > 0.6 ? '#f39c12' : '#e74c3c';
+                        
+                        html += `
+                            <div class="detection-item">
+                                <div class="detection-class">
+                                    ${index + 1}. ${detection.class_name || detection.class}
+                                </div>
+                                <div class="detection-confidence" style="color: ${confidenceColor};">
+                                    ✅ Confidence: ${confidencePercentage}%
+                                </div>
+                                <div class="detection-bbox">
+                                    📍 Position: [${detection.bbox?.map(x => Math.round(x)).join(', ') || 'N/A'}]
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            } else if (data.type === 'multi_detection_result') {
+                // Multi-model result
+                html = `
+                    <div class="detection-info">
+                        <h4>🌟 Multi-Model Detection</h4>
+                        <p><strong>Models Used:</strong> ${data.models_used?.join(', ')}</p>
+                        <p><strong>Total Detections:</strong> ${data.total_detections}</p>
+                    </div>
+                `;
+                
+                Object.entries(data.combined_results || {}).forEach(([model, detections]) => {
+                    if (detections.length > 0) {
+                        const modelColors = {
+                            'intrusion': '#ff6b6b',
+                            'people': '#4ecdc4', 
+                            'security_threats': '#ff9f43',
+                            'vehicle': '#a55eea'
+                        };
+                        
+                        html += `<h5 style="color: ${modelColors[model] || '#007bff'};">🎯 ${model} (${detections.length} detections):</h5>`;
+                        detections.forEach((detection, index) => {
+                            const confidencePercentage = (detection.confidence * 100).toFixed(1);
+                            const confidenceColor = detection.confidence > 0.8 ? '#27ae60' : 
+                                                   detection.confidence > 0.6 ? '#f39c12' : '#e74c3c';
+                            
+                            html += `
+                                <div class="detection-item" style="border-left-color: ${modelColors[model] || '#007bff'};">
+                                    <div class="detection-class">
+                                        ${index + 1}. ${detection.class_name || detection.class}
+                                    </div>
+                                    <div class="detection-confidence" style="color: ${confidenceColor};">
+                                        ✅ Confidence: ${confidencePercentage}%
+                                    </div>
+                                    <div class="detection-bbox">
+                                        📍 Position: [${detection.bbox?.map(x => Math.round(x)).join(', ') || 'N/A'}]
+                                    </div>
+                                    <div style="font-size: 11px; color: #6c757d; margin-top: 3px;">
+                                        🔍 Model: ${model}
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+                });
+            }
+            
+            resultsDiv.innerHTML = html;
+            
+            // Display result image if available
+            if (data.image_with_boxes) {
+                // Collect detected classes
+                let detectedClasses = [];
+                if (data.type === 'detection_result') {
+                    detectedClasses = [...new Set(data.detections.map(d => d.class_name || d.class))];
+                } else if (data.type === 'multi_detection_result') {
+                    Object.values(data.combined_results || {}).forEach(detections => {
+                        detections.forEach(d => {
+                            const className = d.class_name || d.class;
+                            if (!detectedClasses.includes(className)) {
+                                detectedClasses.push(className);
+                            }
+                        });
+                    });
+                }
+                
+                imageContainer.innerHTML = `
+                    <h5>📷 Result Image with Detections:</h5>
+                    <img src="data:image/jpeg;base64,${data.image_with_boxes}" 
+                         class="image-preview" alt="Detection Result">
+                    
+                    <div class="legend">
+                        <h5>📖 Detection Results & Information:</h5>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <strong style="color: #333;">Detected Objects:</strong><br>
+                            ${detectedClasses.length > 0 ? 
+                                detectedClasses.map(className => {
+                                    const classColors = {
+                                        'gun': '#e74c3c',
+                                        'human': '#3498db', 
+                                        'person': '#3498db',
+                                        'suitcase': '#f39c12',
+                                        'box': '#f39c12',
+                                        'Car': '#9b59b6',
+                                        'car': '#9b59b6',
+                                        'Truck': '#34495e',
+                                        'truck': '#34495e',
+                                        'Bus': '#e67e22',
+                                        'bus': '#e67e22',
+                                        'Motorcycle': '#1abc9c',
+                                        'motorcycle': '#1abc9c',
+                                        'Ambulance': '#e74c3c'
+                                    };
+                                    const color = classColors[className] || '#7f8c8d';
+                                    return `<span class="legend-item" style="background: ${color}; color: white;">${className}</span>`;
+                                }).join('') 
+                                : '<span class="legend-text">No objects detected</span>'
+                            }
+                        </div>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <strong style="color: #333;">Model Colors:</strong><br>
+                            <span class="legend-item legend-intrusion">Intrusion</span>
+                            <span class="legend-item legend-people">People</span>
+                            <span class="legend-item legend-security">Security Threats</span>
+                            <span class="legend-item legend-vehicle">Vehicle</span>
+                        </div>
+                        
+                        <div style="margin-bottom: 10px;">
+                            <strong style="color: #333;">Confidence Levels:</strong><br>
+                            <span class="legend-item" style="background: #27ae60;">High (80%+)</span>
+                            <span class="legend-item" style="background: #f39c12;">Medium (60-79%)</span>
+                            <span class="legend-item" style="background: #e74c3c;">Low (<60%)</span>
+                        </div>
+                        
+                        <div>
+                            <strong style="color: #333;">Information:</strong><br>
+                            <span class="legend-item legend-confidence">✅ Confidence</span> <span class="legend-text">Detection accuracy percentage</span><br>
+                            <span class="legend-item legend-bbox">📍 Position</span> <span class="legend-text">Bounding box coordinates [x1, y1, x2, y2]</span><br>
+                            <span class="legend-text">Higher confidence indicates more reliable detection</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            log(`🎯 Detection completed: ${data.detections_count || data.total_detections} objects found`);
+        }
+        
+        function sendPing() {
+            if (ws && isConnected) {
+                const message = {
+                    type: 'ping',
+                    timestamp: new Date().toISOString()
+                };
+                
+                ws.send(JSON.stringify(message));
+                log('🏓 Ping sent');
+            }
+        }
+        
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    currentImage = e.target.result.split(',')[1]; // Remove data:image/...;base64,
+                    log(`📷 Image loaded: ${file.name} (${file.size} bytes)`);
+                    
+                    // Show preview
+                    const imageContainer = document.getElementById('imageContainer');
+                    imageContainer.innerHTML = `
+                        <h5>📷 Selected Image:</h5>
+                        <img src="${e.target.result}" class="image-preview" alt="Selected Image">
+                    `;
+                    
+                    // Enable detect button if connected
+                    const detectBtn = document.getElementById('detectBtn');
+                    if (isConnected) {
+                        detectBtn.disabled = false;
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function sendImageDetection() {
+            if (!ws || !isConnected || !currentImage) {
+                log('🚨 Cannot send detection: not connected or no image selected');
+                return;
+            }
+            
+            const confidence = parseFloat(document.getElementById('confidenceSlider').value);
+            const drawBoxes = document.getElementById('drawBoxes').checked;
+            
+            const message = {
+                type: 'image',
+                data: currentImage,
+                confidence: confidence,
+                draw_boxes: drawBoxes,
+                timestamp: new Date().toISOString()
+            };
+            
+            ws.send(JSON.stringify(message));
+            log(`🔍 Detection request sent (confidence: ${confidence}, draw_boxes: ${drawBoxes})`);
+        }
+        
+        function updateConfidence(value) {
+            document.getElementById('confidenceValue').textContent = value;
+        }
+        
+        // Initialize
+        updateStatus(false);
+        log('Application initialized. Ready to connect!');
+        
+        // Demo function for testing UI (dapat dihapus nanti)
+        function demoDetectionResult() {
+            const demoData = {
+                type: 'multi_detection_result',
+                models_used: ['intrusion', 'people', 'security_threats', 'vehicle'],
+                total_detections: 4,
+                combined_results: {
+                    intrusion: [
+                        {
+                            class_name: 'suitcase',
+                            confidence: 0.87,
+                            bbox: [120, 80, 250, 300]
+                        }
+                    ],
+                    people: [
+                        {
+                            class_name: 'human', 
+                            confidence: 0.92,
+                            bbox: [350, 90, 450, 280]
+                        }
+                    ],
+                    security_threats: [
+                        {
+                            class_name: 'gun',
+                            confidence: 0.78,
+                            bbox: [480, 100, 580, 290]
+                        }
+                    ],
+                    vehicle: [
+                        {
+                            class_name: 'Car',
+                            confidence: 0.85,
+                            bbox: [200, 300, 400, 450]
+                        }
+                    ]
+                },
+                image_with_boxes: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQwIiBoZWlnaHQ9IjQ4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+CiAgPHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxOCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkRldGVjdGlvbiBSZXN1bHQ8L3RleHQ+Cjwvc3ZnPg=='
+            };
+            handleDetectionResult(demoData);
+        }
+        
+        // Uncomment line below to test UI:
+        // setTimeout(demoDetectionResult, 2000);
+    </script>
+</body>
+</html>

@@ -2,13 +2,64 @@ import os
 import json
 import jwt
 import bcrypt
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from pydantic import BaseModel
 from dotenv import load_dotenv
 from models import auth as model_auth
 
 load_dotenv()
 
-JWT_SECRET = os.getenv("JWT_SECRET")
+JWT_SECRET = os.getenv("JWT_SECRET", "default_secret")
+security = HTTPBearer()
 
+router = APIRouter(prefix="/auth", tags=["Authentication"])
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+class RegisterRequest(BaseModel):
+    username: str
+    password: str
+
+@router.post("/login")
+async def login(request: LoginRequest):
+    """Login endpoint for authentication"""
+    try:
+        user = await model_auth.get_admin_by_username(request.username)
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+        # Verify password (implement password verification logic)
+        # This is a placeholder - implement proper password verification
+        
+        token = jwt.encode({"username": request.username}, JWT_SECRET, algorithm="HS256")
+        return {
+            "success": True,
+            "token": token,
+            "message": "Login successful"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/register")
+async def register(request: RegisterRequest):
+    """Register admin endpoint"""
+    try:
+        existing_user = await model_auth.get_admin_by_username(request.username)
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Admin already registered")
+        
+        await model_auth.add_admin(request.username, request.password)
+        return {
+            "success": True,
+            "message": "Admin registered successfully"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Legacy WebSocket functions (keeping for backward compatibility)
 async def sign_up_admin(websocket, msg: dict):
     username = msg.get("username")
     password = msg.get("password")

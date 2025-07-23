@@ -1,95 +1,162 @@
-from fastapi import FastAPI, WebSocket, Request, File, UploadFile
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
-from transformers import BertTokenizer, BertModel, pipeline
-from PIL import Image, ImageDraw
-import io
-import base64
+from fastapi.responses import JSONResponse
+import uvicorn
+import logging
+import os
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv(dotenv_path="../.env")  # Load from be2/.env
 
-@app.get("/")
-async def root():
-    return {"message": "API is running! 🎉 Check /docs for endpoints."}
+# Import routers
+from controller.detection_controller import router as detection_router
+from controller.websocket_controller import router as websocket_router
+from controller.auth_controller import router as auth_router
+from controller.faces_controller import router as faces_router
 
+# Import services untuk pre-loading
+from services.yolo_service import yolo_manager
+from services.database_service import db_service
 
-# Middleware CORS
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Startup and shutdown events"""
+    # Startup
+    logger.info("🚀 Starting AI-FRSS YOLO Detection Service...")
+    
+    # Check database connection
+    try:
+        logger.info("Checking PostgreSQL connection...")
+        db_connected = await db_service.check_connection()
+        if db_connected:
+            logger.info("✅ PostgreSQL connected successfully")
+            # Create tables if they don't exist
+            await db_service.create_tables()
+        else:
+            logger.error("❌ PostgreSQL connection failed")
+    except Exception as e:
+        logger.error(f"❌ Database initialization error: {e}")
+    
+    # Pre-load default models
+    try:
+        logger.info("Loading default YOLO models...")
+        # Pre-load semua model untuk performa optimal
+        models_to_load = ["intrusion", "people", "security_threats", "vehicle"]
+        for model_name in models_to_load:
+            try:
+                yolo_manager.load_model(model_name)
+                logger.info(f"✅ Model {model_name} loaded successfully")
+            except Exception as e:
+                logger.error(f"❌ Failed to load model {model_name}: {e}")
+        
+        loaded_count = len(yolo_manager.loaded_models)
+        logger.info(f"✅ {loaded_count}/{len(models_to_load)} models loaded successfully")
+    except Exception as e:
+        logger.error(f"❌ Error loading default models: {e}")
+    
+    yield
+    
+    # Shutdown
+    logger.info("🛑 Shutting down AI-FRSS service...")
+    await db_service.close()
+
+# Create FastAPI app with lifespan
+app = FastAPI(
+    title="AI-FRSS YOLO Detection API",
+    description="API untuk deteksi objek menggunakan YOLO models pada sistem surveillance",
+    version="2.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    lifespan=lifespan
+)
+
+# CORS Middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # In production, specify exact origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
 )
 
-# Load BERT model & tokenizer
-tokenizer = BertTokenizer.from_pretrained('indobenchmark/indobert-base-p1')
-bert_model = BertModel.from_pretrained('indobenchmark/indobert-base-p1')
+# Root endpoint
+@app.get("/", tags=["Root"])
+async def root():
+    """Health check endpoint"""
+    return {
+        "message": "🎥 AI-FRSS YOLO Detection Service is running!",
+        "version": "2.0.0",
+        "status": "active",
+        "available_endpoints": {
+            "docs": "/docs",
+            "detection": "/detection",
+            "websocket": "/ws",
+            "health": "/health"
+        }
+    }
 
-# Load object detection pipeline (DETR)
-object_detector = pipeline("object-detection", model="facebook/detr-resnet-50")
-
-# WebSocket untuk teks/BERT
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
+@app.get("/health", tags=["Health"])
+async def health_check():
+    """Detailed health check"""
     try:
-        while True:
-            data = await websocket.receive_text()
-            print("Diterima:", data)
-            inputs = tokenizer(data, return_tensors="pt")
-            outputs = bert_model(**inputs)
-            pooled = outputs.pooler_output.detach().numpy().tolist()
-            await websocket.send_text(f"Embedding shape: {len(pooled)}x{len(pooled[0])}")
+        # Check YOLO models
+        available_models = yolo_manager.get_available_models()
+        loaded_models = list(yolo_manager.loaded_models.keys())
+        
+        # Check database connection
+        db_status = await db_service.check_connection()
+        
+        return {
+            "status": "healthy" if db_status else "degraded",
+            "timestamp": "2025-07-18",
+            "database": {
+                "status": "connected" if db_status else "disconnected",
+                "type": "PostgreSQL"
+            },
+            "models": {
+                "available": len(available_models),
+                "loaded": len(loaded_models),
+                "available_models": list(available_models.keys()),
+                "loaded_models": loaded_models
+            }
+        }
     except Exception as e:
-        print("WebSocket error:", e)
-    finally:
-        await websocket.close()
+        raise HTTPException(status_code=500, detail=f"Service unhealthy: {str(e)}")
 
-# REST API untuk encode teks dengan BERT
-@app.post("/encode")
-async def encode_text(request: Request):
-    data = await request.json()
-    text = data.get("text", "")
-    inputs = tokenizer(text, return_tensors="pt")
-    outputs = bert_model(**inputs)
-    pooled = outputs.pooler_output.detach().numpy().tolist()
-    return {"embedding": pooled}
+# Include routers
+app.include_router(detection_router)
+app.include_router(websocket_router)
+app.include_router(auth_router)
+app.include_router(faces_router)
 
-# REST API untuk deteksi objek pada gambar! (upload file) 
-@app.post("/process-image")
-async def process_image(file: UploadFile = File(...)):
-    image = Image.open(io.BytesIO(await file.read())).convert("RGB")
-    results = object_detector(image)
-    draw = ImageDraw.Draw(image)
-    for obj in results:
-        box = obj['box']
-        draw.rectangle([box['xmin'], box['ymin'], box['xmax'], box['ymax']], outline="red", width=3)
-    buf = io.BytesIO()
-    image.save(buf, format="PNG")
-    buf.seek(0)
-    return StreamingResponse(buf, media_type="image/png")
+# Global exception handler
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    logger.error(f"Global exception: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error", "error": str(exc)}
+    )
 
-# WebSocket untuk deteksi objek pada gambar (base64)
-@app.websocket("/ws-image")
-async def websocket_image(websocket: WebSocket):
-    await websocket.accept()
-    try:
-        while True:
-            data = await websocket.receive_text()
-            img_bytes = base64.b64decode(data)
-            image = Image.open(io.BytesIO(img_bytes)).convert("RGB")
-            results = object_detector(image)
-            draw = ImageDraw.Draw(image)
-            for obj in results:
-                box = obj['box']
-                draw.rectangle([box['xmin'], box['ymin'], box['xmax'], box['ymax']], outline="red", width=3)
-            buf = io.BytesIO()
-            image.save(buf, format="PNG")
-            buf.seek(0)
-            img_b64 = base64.b64encode(buf.read()).decode("utf-8")
-            await websocket.send_text(img_b64)
-    except Exception as e:
-        print("WebSocket error:", e)
-    finally:
-        await websocket.close()
+# Run the application
+if __name__ == "__main__":
+    # Get configuration from environment
+    PORT = int(os.getenv("PORT", "8000"))
+    DEBUG = os.getenv("DEBUG", "false").lower() == "true"
+    
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=PORT,
+        reload=DEBUG,
+        log_level="info"
+    )
