@@ -1,0 +1,23 @@
+[33m29bc34b8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/api[m[33m)[m HEAD@{0}: reset: moving to HEAD
+[33m29bc34b8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/api[m[33m)[m HEAD@{1}: checkout: moving from testingapi to main
+[33ma1d761c2[m[33m ([m[1;32mtestingapi[m[33m, [m[1;32mapi[m[33m)[m HEAD@{2}: checkout: moving from api to testingapi
+[33ma1d761c2[m[33m ([m[1;32mtestingapi[m[33m, [m[1;32mapi[m[33m)[m HEAD@{3}: commit: testing api lagi
+[33m802b98ce[m HEAD@{4}: commit: testing api
+[33m29bc34b8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/api[m[33m)[m HEAD@{5}: checkout: moving from main to api
+[33m29bc34b8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/api[m[33m)[m HEAD@{6}: reset: moving to HEAD
+[33m29bc34b8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/api[m[33m)[m HEAD@{7}: reset: moving to origin/main
+[33m29bc34b8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/api[m[33m)[m HEAD@{8}: reset: moving to origin/main
+[33m29bc34b8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/api[m[33m)[m HEAD@{9}: pull origin main: Fast-forward
+[33meebb9283[m HEAD@{10}: pull origin main: Fast-forward
+[33ma0981d4e[m HEAD@{11}: pull origin main: Fast-forward
+[33m6b5e6329[m HEAD@{12}: pull origin main: Fast-forward
+[33m7e8c4ed5[m HEAD@{13}: filter-branch: rewrite
+[33m65451fef[m HEAD@{14}: commit: Update .gitignore to exclude venv
+[33m7b700ea3[m HEAD@{15}: reset: moving to HEAD
+[33m7b700ea3[m HEAD@{16}: commit: testing
+[33m33df139a[m HEAD@{17}: commit: testing
+[33m3899056a[m HEAD@{18}: Branch: renamed refs/heads/main to refs/heads/main
+[33m3899056a[m HEAD@{20}: Branch: renamed refs/heads/main to refs/heads/main
+[33m3899056a[m HEAD@{22}: Branch: renamed refs/heads/main to refs/heads/main
+[33m3899056a[m HEAD@{24}: commit: websocket dan model
+[33m2210783e[m HEAD@{25}: clone: from https://github.com/richasdy/AI-FRSS-dash.git
