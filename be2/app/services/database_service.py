@@ -1,93 +1,97 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.orm import declarative_base
-from sqlalchemy import MetaData
+"""
+Database Service
+Handles database connections and session management
+"""
 import os
-from typing import AsyncGenerator
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy.exc import SQLAlchemyError
+from dotenv import load_dotenv
 import logging
+
+# Load environment variables
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-# Database configuration from environment
-DATABASE_URL = os.getenv(
-    "DATABASE_URL", 
-    "postgresql+asyncpg://root:root123@localhost:5432/sv_fs"
-)
-
-# SQLAlchemy setup
-engine = create_async_engine(
-    DATABASE_URL,
-    echo=os.getenv("DEBUG", "false").lower() == "true",  # Use DEBUG from .env
-    pool_size=10,
-    max_overflow=20,
-    pool_pre_ping=True,
-    pool_recycle=3600
-)
-
-# Session factory
-async_session_factory = async_sessionmaker(
-    engine,
-    class_=AsyncSession,
-    expire_on_commit=False
-)
-
-# Base class for models
-Base = declarative_base()
-
-# Metadata for migrations
-metadata = MetaData()
-
 class DatabaseService:
-    """Database service untuk PostgreSQL"""
+    """Database service for async SQLAlchemy operations"""
     
     def __init__(self):
-        self.engine = engine
-        self.session_factory = async_session_factory
+        self.engine = None
+        self.session_factory = None
+        self._initialize_engine()
     
-    async def get_session(self) -> AsyncGenerator[AsyncSession, None]:
-        """Get database session"""
+    def _initialize_engine(self):
+        """Initialize the database engine"""
+        database_url = os.getenv(
+            "DATABASE_URL", 
+            "postgresql+asyncpg://root:root123@localhost:5432/sv_fs"
+        )
+        
+        self.engine = create_async_engine(
+            database_url,
+            echo=os.getenv("DEBUG", "false").lower() == "true",
+            pool_size=10,
+            max_overflow=20,
+            pool_pre_ping=True,
+            pool_recycle=3600
+        )
+        
+        self.session_factory = async_sessionmaker(
+            self.engine,
+            class_=AsyncSession,
+            expire_on_commit=False
+        )
+    
+    async def connect(self):
+        """Test database connection"""
+        try:
+            async with self.engine.begin() as conn:
+                await conn.execute("SELECT 1")
+            logger.info("Database connection established")
+        except Exception as e:
+            logger.error(f"Database connection failed: {str(e)}")
+            raise
+    
+    async def disconnect(self):
+        """Close database connection"""
+        if self.engine:
+            await self.engine.dispose()
+            logger.info("Database connection closed")
+    
+    async def get_session(self):
+        """Get async database session"""
+        if not self.session_factory:
+            raise RuntimeError("Database not initialized")
+        
         async with self.session_factory() as session:
             try:
                 yield session
-                await session.commit()
-            except Exception:
+            except SQLAlchemyError:
                 await session.rollback()
                 raise
             finally:
                 await session.close()
     
-    async def create_tables(self):
-        """Create all tables"""
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-            logger.info("✅ Database tables created successfully")
+    async def execute_query(self, query: str, values: dict = None):
+        """Execute raw SQL query"""
+        async with self.engine.begin() as conn:
+            if values:
+                result = await conn.execute(query, values)
+            else:
+                result = await conn.execute(query)
+            return result
     
-    async def drop_tables(self):
-        """Drop all tables (use with caution!)"""
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.drop_all)
-            logger.info("🗑️ Database tables dropped")
+    async def fetch_all(self, query: str, values: dict = None):
+        """Execute query and fetch all results"""
+        result = await self.execute_query(query, values)
+        return [dict(row._mapping) for row in result.fetchall()]
     
-    async def check_connection(self) -> bool:
-        """Check database connection"""
-        try:
-            async with engine.begin() as conn:
-                await conn.execute("SELECT 1")
-            logger.info("✅ Database connection successful")
-            return True
-        except Exception as e:
-            logger.error(f"❌ Database connection failed: {e}")
-            return False
-    
-    async def close(self):
-        """Close database connections"""
-        await engine.dispose()
-        logger.info("🔒 Database connections closed")
+    async def fetch_one(self, query: str, values: dict = None):
+        """Execute query and fetch one result"""
+        result = await self.execute_query(query, values)
+        row = result.fetchone()
+        return dict(row._mapping) if row else None
 
-# Global database service instance
-db_service = DatabaseService()
-
-# Dependency untuk FastAPI
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    """FastAPI dependency untuk database session"""
-    async for session in db_service.get_session():
-        yield session
+# Create global database service instance
+database_service = DatabaseService()

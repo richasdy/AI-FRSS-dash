@@ -13,7 +13,7 @@ load_dotenv()
 JWT_SECRET = os.getenv("JWT_SECRET", "default_secret")
 security = HTTPBearer()
 
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+router = APIRouter(tags=["Authentication"])
 
 class LoginRequest(BaseModel):
     username: str
