@@ -1,5 +1,5 @@
 """
-Universal YOLO API Template - INTRUSION MODEL
+Universal YOLO API Template - VEHICLE MODEL
 Copy-paste this file and change MODEL_TYPE for new models
 
 For new models:
@@ -14,14 +14,14 @@ from services.models_service import yolo_service
 from schemas.models_schemas import DetectionRequest, DetectionResponse, ModelsListResponse
 
 # 🔧 CHANGE THIS FOR NEW MODELS
-MODEL_TYPE = "intrusion"
+MODEL_TYPE = "vehicle"
 
 router = APIRouter()
 
 @router.post("/detect", response_model=DetectionResponse)
-async def detect_intrusion(request: DetectionRequest):
+async def detect_vehicle(request: DetectionRequest):
     """
-    Detect intrusion in image
+    Detect vehicle in image
     
     Copy-paste template - only MODEL_TYPE changes for different models
     """
@@ -41,12 +41,12 @@ async def detect_intrusion(request: DetectionRequest):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Intrusion detection failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Vehicle detection failed: {str(e)}")
 
 @router.get("/info")
-async def get_intrusion_model_info():
+async def get_vehicle_model_info():
     """
-    Get intrusion model information
+    Get vehicle model information
     
     Copy-paste template - only MODEL_TYPE changes
     """
@@ -56,9 +56,9 @@ async def get_intrusion_model_info():
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/history")
-async def get_intrusion_history(limit: int = 100):
+async def get_vehicle_history(limit: int = 100):
     """
-    Get intrusion detection history
+    Get vehicle detection history
     
     Copy-paste template - only MODEL_TYPE changes
     """
@@ -68,9 +68,9 @@ async def get_intrusion_history(limit: int = 100):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/load")
-async def load_intrusion_model():
+async def load_vehicle_model():
     """
-    Load intrusion model into memory
+    Load vehicle model into memory
     
     Copy-paste template - only MODEL_TYPE changes
     """
