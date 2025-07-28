@@ -67,7 +67,7 @@ async def root():
 # Import and include routers
 try:
     from controller.auth_controller import router as auth_router
-    app.include_router(auth_router, prefix="/api/v1/auth", tags=["authentication"])
+    app.include_router(auth_router, prefix="/mobile/v1/auth", tags=["authentication"])
     logger.info("Authentication routes loaded successfully")
 except ImportError as e:
     logger.warning(f"Auth routes could not be loaded: {str(e)}")
