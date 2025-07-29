@@ -49,7 +49,9 @@ class UniversalYOLOService:
                 "classes": ["car", "truck", "bus", "motorcycle"]
             }
         }
-        self.models_path = "yolo_models"
+        # Use absolute path to models
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        self.models_path = os.path.join(os.path.dirname(current_dir), "yolo_models")
     
     def _get_model_path(self, model_type: str) -> str:
         """Get full path to model file"""

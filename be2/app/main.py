@@ -72,6 +72,35 @@ try:
 except ImportError as e:
     logger.warning(f"Auth routes could not be loaded: {str(e)}")
 
+# Import YOLO Model APIs
+try:
+    from api.mobile_v1.intrusion_api import router as intrusion_router
+    app.include_router(intrusion_router, prefix="/mobile/v1/intrusion", tags=["intrusion-detection"])
+    logger.info("Intrusion detection routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"Intrusion routes could not be loaded: {str(e)}")
+
+try:
+    from api.mobile_v1.people_api import router as people_router
+    app.include_router(people_router, prefix="/mobile/v1/people", tags=["people-detection"])
+    logger.info("People detection routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"People routes could not be loaded: {str(e)}")
+
+try:
+    from api.mobile_v1.security_api import router as security_router
+    app.include_router(security_router, prefix="/mobile/v1/security_threats", tags=["security-detection"])
+    logger.info("Security threats detection routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"Security routes could not be loaded: {str(e)}")
+
+try:
+    from api.mobile_v1.vehicle_api import router as vehicle_router
+    app.include_router(vehicle_router, prefix="/mobile/v1/vehicle", tags=["vehicle-detection"])
+    logger.info("Vehicle detection routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"Vehicle routes could not be loaded: {str(e)}")
+
 # WebSocket routes disabled for now
 logger.info("WebSocket routes disabled - service starting in basic mode")
 
