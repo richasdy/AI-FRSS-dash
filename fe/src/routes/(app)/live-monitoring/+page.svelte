@@ -1,12 +1,15 @@
 <script lang="ts">
-	import { onDestroy } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { Check, ChevronDown, Clock, MapPin, Maximize } from '@lucide/svelte';
 	import Breadcrumb from '../../../components/breadcrumb/Breadcrumb.svelte';
+	import { getMonitoringFeeds, getLiveAlerts, getAllStream } from './api';
+	import { AlertTriangle, CameraIcon, AlertCircle } from 'lucide-svelte';
+	import { Move } from 'lucide-svelte';
+	import type { PageLoad } from './$types';
+	import { page } from '$app/stores';
 	import {
 		feedGridTabs,
 		gridClassMap,
-		liveAlertDummy,
-		monitoringDummy,
 		panTiltControls,
 		presetPositions,
 		quickActions,
@@ -14,28 +17,20 @@
 	} from './data';
 
 	let feedsGrid: number = $state(2);
+	let monitoringData = [];
+	let alertData = [];
+	let imageUrls: string[] = [];
 
-	const cameraSnapshots = [
-		'http://185.97.122.128:80/cgi-bin/faststream.jpg?stream=half&fps=15&rand=COUNTER',
-		'http://85.220.149.7:80/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER',
-		'http://80.151.142.110:8080/?action=stream',
-		'http://87.139.153.80:80/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER',
-		'http://37.182.240.202:82/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER',
-		'http://91.113.207.170:80/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER',
-		'http://86.121.159.16:80/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER',
-		'http://151.14.98.27:80/jpgmulreq/1/image.jpg?key=1516975535684&amp;lq=1&amp;1752166261',
-		'http://77.89.48.24:89/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER',
-		'http://82.187.186.77:80/cgi-bin/faststream.jpg?stream=half&amp;fps=15&amp;rand=COUNTER'
-	];
-
-	const imageUrls: string[] = Array(cameraSnapshots.length).fill('');
 	const intervals: any[] = [];
-
+	const iconMap = {
+		'motion': Move,
+		'intrusion': AlertTriangle,
+		'camera': CameraIcon
+	};
+	
 	function startRefreshing() {
-		cameraSnapshots.forEach((baseUrl, index) => {
-			if (baseUrl.includes('mjpg')) {
-				imageUrls[index] = baseUrl;
-			} else {
+		imageUrls.forEach((baseUrl, index) => {
+			if (baseUrl && !baseUrl.includes('mjpg')) {
 				function refresh() {
 					const rand = Math.floor(Math.random() * 100000);
 					imageUrls[index] = `${baseUrl}?rand=${rand}`;
@@ -46,12 +41,36 @@
 			}
 		});
 	}
-
-	startRefreshing();
+	
+	async function loadData() {
+		monitoringData = await getMonitoringFeeds();
+		const alerts = await getLiveAlerts();
+		alertData = alerts.map((alert) => ({
+			...alert,
+			icon: iconMap[alert.type] || AlertCircle
+		}));
+		imageUrls = await getAllStream();
+	}
 
 	onDestroy(() => {
 		intervals.forEach(clearInterval);
 	});
+
+	onMount(async () => {
+	console.log('onMount triggered');
+	const result = await getAllStream();
+	console.log('getAllStream result:', data);
+	await loadData(); 
+
+	if (Array.isArray(imageUrls)) {
+		startRefreshing();
+		console.log('[imageUrls updated]', imageUrls);
+	} else {
+		console.error('[getAllStream] not array:', imageUrls);
+	}
+});
+
+
 
 </script>
 
@@ -75,11 +94,12 @@
 			</div>
 		</div>
 		<div class={`grid ${gridClassMap[feedsGrid]} gap-2 px-6 py-5`}>
-			{#each monitoringDummy as monitoring, i}
+			{#each monitoringData as monitoring, i}
 				<div
 					class={`relative max-h-56 overflow-hidden border border-gray-200 dark:border-gray-800 ${feedsGrid !== 4 ? 'rounded-xl' : 'rounded-lg'}`}
 				>
-					{#if cameraSnapshots[i % cameraSnapshots.length].includes('mjpg')}
+				{#if imageUrls.length > 0}
+					{#if imageUrls[i % imageUrls.length] && imageUrls[i % imageUrls.length].includes('mjpg')}
 						<video
 							src={imageUrls[i % imageUrls.length]}
 							autoplay
@@ -95,6 +115,13 @@
 							class="relative h-full w-full object-cover"
 						/>
 					{/if}
+				{:else}
+					<!-- Optional: tampilkan placeholder jika belum ada URL -->
+					<div class="flex items-center justify-center h-full text-gray-400 text-sm">
+						No video feed
+					</div>
+				{/if}
+
 					<div class="absolute top-0 left-0 h-full w-full bg-gray-800/50"></div>
 					<div class="absolute bottom-0 px-4 pb-4">
 						<p class="text-theme-lg font-medium text-white">{monitoring.name}</p>
@@ -131,8 +158,8 @@
 									<option value="" class="text-gray-700 dark:bg-gray-900 dark:text-gray-400">
 										Select Camera
 									</option>
-									{#each monitoringDummy as monitoring}
-										<option
+									{#each monitoringData as monitoring, i}
+									<option
 											value={monitoring.name}
 											class="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
 										>
@@ -235,7 +262,7 @@
 				</a>
 			</div>
 			<div class="grid grid-cols-1 gap-y-2 px-6 py-5">
-				{#each liveAlertDummy.slice(0, 3) as liveAlert}
+				{#each alertData.slice(0, 3) as liveAlert}
 					<div
 						class="hover:bg-brand-50 w-full rounded-lg bg-gray-100/70 px-6 py-5 transition duration-300"
 					>

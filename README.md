@@ -74,9 +74,9 @@ A high-performance web-based surveillance dashboard to monitor, analyze, and man
 
 ### 🗄️ Backend (Database Setup)
 1. Jalankan XAMPP / MySQL
-2. Buat database bernama: `sv-fs`
-3. Import file `sv-fs.sql` ke database tersebut  
-   _(pastikan file `sv-fs.sql` ada di folder proyek)_
+2. Buat database bernama: `sv-fs.sqlite`
+3. Import file `sv-fs.sqlite.sql` ke database tersebut  
+   _(pastikan file `sv-fs.sqlite.sql` ada di folder proyek)_
 
 ---
 

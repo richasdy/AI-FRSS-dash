@@ -10,7 +10,6 @@ load_dotenv()
 JWT_SECRET = os.getenv("JWT_SECRET")
 
 async def sign_up_admin(websocket, msg: dict):
-    username = msg.get("username")
     password = msg.get("password")
     try:
         cek_user = await model_auth.get_admin_by_username(username)

@@ -1,23 +1,15 @@
 {
   "development": {
-    "username": "postgres",
-    "password": "root123",
-    "database": "sv_fs_dev",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "sqlite",
+    "storage": "../../../sv-fs.sqlite"
   },
   "test": {
-    "username": "postgres",
-    "password": "root123",
-    "database": "sv_fs_test",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "sqlite",
+    "storage": "../../../sv-fs.sqlite"
   },
-  "production": {
-    "username": "postgres",
-    "password": "root123",
-    "database": "sv_fs_prod",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+  "production": { 
+    "dialect": "sqlite",
+    "storage": "../../../sv-fs.sqlite"
   }
 }
+ 

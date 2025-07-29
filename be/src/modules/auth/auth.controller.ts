@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { signInService, signUpService } from './auth.service';
 import { DB } from '@/database/index';
-import bcrypt from 'bcrypt';  // Pastikan sudah install bcrypt
+import bcrypt from 'bcrypt';  
+
 
 export const signUpController = async (
     req: Request,
@@ -11,6 +12,7 @@ export const signUpController = async (
     try {
         const userData = req.body;
         const response = await signUpService(userData);
+        console.log("Register Payload:", req.body); 
 
         res.status(201).json({
             message: 'Successfully signed up',
@@ -43,19 +45,16 @@ export const signInController = async (
 
 export const register = async (req: Request, res: Response) => {
     try {
-        const { email, name, username, password } = req.body;
+        const { email, name, password } = req.body;
 
-        // Pastikan password di-hash
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = await DB.Users.create({
             email,
             name,
-            username,
             password: hashedPassword,
             isApproved: false,
-            created_at: new Date(),
-            updated_at: new Date(),
+            // Removed created_at and updated_at, Sequelize handles them automatically
         });
 
         res.status(201).json({ message: 'User created successfully', data: user });

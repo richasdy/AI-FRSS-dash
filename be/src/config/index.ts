@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 
-config(); // cukup ini, otomatis cari file .env di root
+config(); 
 
 export const {
     PORT,

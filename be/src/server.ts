@@ -1,3 +1,6 @@
+import dotenv from 'dotenv'; 
+dotenv.config(); 
+
 import express from 'express';
 import cors from 'cors';
 import router from '@routes/routes';
@@ -6,6 +9,7 @@ import { DB } from '@database/index';
 import { PORT } from './config';
 import { errorHandler } from './utils/error-handler';
 import { swaggerSpec, swaggerUi } from './utils/swagger';
+
 
 const appServer = express();
 const port = Number(PORT) || 3000;
@@ -56,9 +60,10 @@ DB.sequelize
     .authenticate()
     .then(() => {
         logger.info('Database connected successfully!');
-        appServer.listen(port, '0.0.0.0', () => {
-            logger.info(`Server is running on http://0.0.0.0:${port}`);
+        appServer.listen(port, '127.0.0.1', () => {
+            logger.info(`Server is running on http://127.0.0.1:${port}`);
         });
+        
     })
     .catch(error => {
         logger.error('Unable to connect to the database:', error);

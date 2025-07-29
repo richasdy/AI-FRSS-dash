@@ -1,7 +1,7 @@
 import { User } from '@/interfaces/user.interfaces';
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 
-export type UserCreationAttributes = Optional<User, 'id' | 'username'>;
+export type UserCreationAttributes = Optional<User, 'id' | 'username' | 'created_at' | 'updated_at'>;
 
 export class UserModel
     extends Model<User, UserCreationAttributes>
@@ -47,10 +47,11 @@ export default function (sequelize: Sequelize): typeof UserModel {
                 type: DataTypes.STRING(255),
             },
             isApproved: {
-                allowNull: false,
                 type: DataTypes.BOOLEAN,
+                field: 'is_approved', 
+                allowNull: false,
                 defaultValue: false,
-            },
+              },              
             created_at: DataTypes.DATE,
             updated_at: DataTypes.DATE,
         },

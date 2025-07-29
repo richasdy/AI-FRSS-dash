@@ -37,7 +37,7 @@ describe('getUserProfileController', () => {
         const mockUser = {
             id: 'user123',
             email: 'user@example.com',
-            username: 'user',
+            
         };
         (getUserProfileService as jest.Mock).mockResolvedValue(mockUser);
 

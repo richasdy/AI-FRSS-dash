@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { AlertCircle, Camera, UserCheck, UserX } from '@lucide/svelte';
 	import Breadcrumb from '../../../components/breadcrumb/Breadcrumb.svelte';
-	import { eventDummy, systemHealthDummy } from './data';
 	import { renderChart } from 'svelte-chart-apex';
 	import { activityTimelineChartData, cameraStatusChartData } from './charts';
+	import { eventDummy, systemHealthDummy } from './data';
+	import { fetchDashboardEvents } from './api'; 
+
+	const events = eventDummy;
+	const systemHealth = systemHealthDummy;
 </script>
 
 <div class="flex flex-col gap-y-6">
@@ -150,47 +154,59 @@
 
 					<!-- Table Body -->
 					<tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-						{#each eventDummy.slice(0, 3) as event, index}
+						{#if events && events.length > 0}
+							{#each events.slice(0, 3) as event, index}
+								<tr>
+									<td class="px-5 py-4 sm:px-6">
+										<div class="flex items-center">
+											<p class="text-theme-sm text-gray-500 dark:text-gray-400">
+												{index + 1}
+											</p>
+										</div>
+									</td>
+									<td class="px-5 py-4 sm:px-6">
+										<div class="flex items-center">
+											<p class="text-theme-sm text-gray-500 dark:text-gray-400">
+												{event.name}
+											</p>
+										</div>
+									</td>
+									<td class="px-5 py-4 sm:px-6">
+										<div class="flex items-center">
+											<p class="text-theme-sm text-gray-500 dark:text-gray-400">
+												{event.location}
+											</p>
+										</div>
+									</td>
+									<td class="px-5 py-4 sm:px-6">
+										<div class="flex items-center">
+											<p class="text-theme-sm text-gray-500 dark:text-gray-400">
+												{event.time}
+											</p>
+										</div>
+									</td>
+									<td class="px-5 py-4 sm:px-6">
+										<div class="flex items-center">
+											<p class={`text-theme-sm ${event.status === 'Pending' ? 'text-warning-500' : event.status === 'Resolved' ? 'text-success-500' : 'text-error-500'}`}>
+												{event.status}
+											</p>
+										</div>
+									</td>
+								</tr>
+							{/each}
+						{:else if $events && $events.length === 0}
 							<tr>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center">
-										<p class="text-theme-sm text-gray-500 dark:text-gray-400">
-											{index + 1}
-										</p>
-									</div>
-								</td>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center">
-										<p class="text-theme-sm text-gray-500 dark:text-gray-400">
-											{event.name}
-										</p>
-									</div>
-								</td>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center">
-										<p class="text-theme-sm text-gray-500 dark:text-gray-400">
-											{event.location}
-										</p>
-									</div>
-								</td>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center">
-										<p class="text-theme-sm text-gray-500 dark:text-gray-400">
-											{event.time}
-										</p>
-									</div>
-								</td>
-								<td class="px-5 py-4 sm:px-6">
-									<div class="flex items-center">
-										<p
-											class={`text-theme-sm ${event.status === 'Pending' ? 'text-warning-500' : event.status === 'Resolved' ? 'text-success-500' : 'text-error-500'}`}
-										>
-											{event.status}
-										</p>
-									</div>
+								<td colspan="5" class="px-6 py-4 text-gray-500 text-center">
+									No events found.
 								</td>
 							</tr>
-						{/each}
+						{:else}
+							<tr>
+								<td colspan="5" class="px-6 py-4 text-gray-500 text-center">
+									Loading events...
+								</td>
+							</tr>
+						{/if}
 					</tbody>
 					<!-- Table Body -->
 				</table>
@@ -207,7 +223,7 @@
 			</div>
 			<div class="px-6 py-5">
 				<div class="flex flex-col gap-y-4">
-					{#each systemHealthDummy as health}
+					{#each systemHealth as health}
 						<div class="flex flex-col gap-y-3">
 							<div class="flex items-center justify-between">
 								<p class="text-theme-md font-medium text-gray-800">{health.label}</p>

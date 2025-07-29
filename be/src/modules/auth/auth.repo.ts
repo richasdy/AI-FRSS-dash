@@ -11,7 +11,8 @@ const repo = {
             ...userData,
             isApproved: false 
         } as any);
-    },    
+    }
+     
 };
 
 export default repo;

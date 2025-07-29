@@ -3,7 +3,7 @@ import { api } from "$lib/axios";
 // Get all users
 export const getAllUsers = async (search: string) => {
 	const response = await api.get(`/users?search=${search}`);
-	return response.data.data; // pastikan ini
+	return response.data.data; 
 };
 
 // Approve user
@@ -20,7 +20,6 @@ export const approveUser = async (userId: string) => {
 		throw error;
 	}
 };
-
 
 // Reject user
 export const rejectUser = async (userId: string) => {
@@ -51,7 +50,6 @@ export const deleteUser = async (userId: string) => {
 		throw error;
 	}
 };
-
 
 // Update user
 export const updateUser = async (userId: string, payload: object) => {

@@ -1,9 +1,10 @@
+// src/modules/auth/auth.service.ts
 import type { UserCreationData, User } from '@/interfaces/user.interfaces';
 import { validateSignIn, validateSignUp } from './auth.validator';
 import repo from './auth.repo';
 import { compareSync, hash } from 'bcrypt';
 import { generateJWT } from '@/middlewares/jwt.service';
-import { JWT_ACCESS_TOKEN_SECRET } from '@/config';
+import { JWT_ACCESS_TOKEN_SECRET } from '@/config'; 
 import { CustomError } from '@/utils/custom-error';
 
 export const signUpService = async (userData: UserCreationData) => {
@@ -51,9 +52,14 @@ export const signInService = async (userData: UserCreationData) => {
         userId: user.id,
     };
 
+    // Ensure JWT_ACCESS_TOKEN_SECRET is not undefined here
+    if (!JWT_ACCESS_TOKEN_SECRET) {
+        throw new Error('JWT_ACCESS_TOKEN_SECRET is not configured.');
+    }
+
     const accessToken = await generateJWT(
         payload,
-        JWT_ACCESS_TOKEN_SECRET as string,
+        JWT_ACCESS_TOKEN_SECRET, // Use the imported secret
     );
 
     return { user, accessToken };

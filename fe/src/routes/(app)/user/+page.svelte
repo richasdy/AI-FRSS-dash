@@ -4,6 +4,7 @@
 	import Breadcrumb from '../../../components/breadcrumb/Breadcrumb.svelte';
 	import { roleDummy } from './data';
 	import { approveUser, rejectUser, deleteUser } from './api';
+	import { userDummy } from './data';
 
 	import {
 	Check,
@@ -40,9 +41,6 @@
   $: if ($usersQuery.data) {
     console.log('Users data:', $usersQuery.data);
   }
-
-
-
 </script>
 
 <div class="flex flex-col gap-y-6">
@@ -280,7 +278,7 @@
 							<td colspan="9" class="p-4 text-center">Error loading users</td>
 						  </tr>
 						{:else}
-						  {#each $usersQuery.data as user, index}
+						{#each $usersQuery.data as user, index}
 							<tr>
 							  <td class="px-5 py-4 sm:px-6">
 								<div class="flex items-center">

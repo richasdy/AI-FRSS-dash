@@ -26,7 +26,7 @@ beforeEach(() => {
 describe('getUserProfileService', () => {
     const mockAccessToken = 'mockAccessToken';
     const mockUserId = 'user123';
-    const mockUser = { id: mockUserId, email: 'user@example.com', username: 'user' };
+    const mockUser = { id: mockUserId, email: 'user@example.com'};
 
     it('should return user profile when accessToken is valid', async () => {
         (verifyJWT as jest.Mock).mockResolvedValue({ userId: mockUserId });

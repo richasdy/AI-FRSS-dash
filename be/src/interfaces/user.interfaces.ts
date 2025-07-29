@@ -7,6 +7,14 @@ export interface User {
     isApproved: boolean;
     created_at: Date;
     updated_at: Date;
+    roleId?: number; // ID peran
+    role?: {
+        id: number;
+        name: string;
+    };
+    department?: string;
+    isOnline?: boolean;
+    lastLogin?: Date; 
   }
   
   export type UserCreationData = {

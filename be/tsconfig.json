@@ -14,7 +14,9 @@
             "@modules/*": ["modules/*"],
             "@config/*": ["config/*"],
             "@middlewares/*": ["middlewares/*"],
-        "@interfaces/*": ["interfaces/*"]
+        "@interfaces/*": ["interfaces/*"],
+
+
         },
         "esModuleInterop": true,
         "typeRoots": ["node_modules/@types"],

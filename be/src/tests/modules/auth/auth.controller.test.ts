@@ -26,7 +26,7 @@ describe('signUpController', () => {
     });
 
     it('should return 201 and response data on successful sign-up', async () => {
-        const mockUser = { id: 1, email: 'new@example.com', username: 'newuser' };
+        const mockUser = { id: 1, email: 'new@example.com' };
         (signUpService as jest.Mock).mockResolvedValue({ user: mockUser });
 
         await signUpController(req as Request, res as Response, next);
@@ -65,7 +65,7 @@ describe('signInController', () => {
 
     it('should return 200 and response data on successful sign-in', async () => {
         const mockResponse = {
-            user: { id: 1, email: 'test@example.com', username: 'testuser' },
+            user: { id: 1, email: 'test@example.com'},
             accessToken: 'mocked_access_token',
         };
         (signInService as jest.Mock).mockResolvedValue(mockResponse);
