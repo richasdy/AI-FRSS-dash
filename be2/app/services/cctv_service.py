@@ -124,17 +124,42 @@ class CCTVMonitoringService:
         if not camera_id:
             camera_id = str(uuid.uuid4())
         
-        # Validate stream URL
-        parsed_url = urlparse(stream_url)
-        if not parsed_url.scheme:
-            # Assume RTSP if no scheme provided
-            stream_url = f"rtsp://{stream_url}"
+        # Clean and validate stream URL
+        original_url = stream_url.strip()
+        
+        # Remove fragments (anything after #)
+        if '#' in original_url:
+            original_url = original_url.split('#')[0]
+            logger.info(f"Removed URL fragment, using: {original_url}")
+        
+        # Validate stream URL format
+        parsed_url = urlparse(original_url)
+        
+        # Handle different URL types
+        if original_url.isdigit():
+            # USB camera (0, 1, 2, etc.)
+            stream_url = int(original_url)
+        elif parsed_url.scheme in ['rtsp', 'http', 'https']:
+            # Direct stream URL
+            stream_url = original_url
+        elif parsed_url.scheme == '':
+            # No scheme provided, try to determine best option
+            if original_url.startswith('192.168.') or original_url.startswith('10.') or '.' in original_url:
+                # Looks like IP address, assume RTSP
+                stream_url = f"rtsp://{original_url}"
+                logger.info(f"Assumed RTSP protocol: {stream_url}")
+            else:
+                # Keep as is and let OpenCV handle it
+                stream_url = original_url
+        else:
+            # Unknown scheme, keep as is
+            stream_url = original_url
         
         camera = CCTVCamera(camera_id, stream_url, name)
         self.cameras[camera_id] = camera
         self.detection_history[camera_id] = []
         
-        logger.info(f"Camera added: {camera.name} ({camera_id})")
+        logger.info(f"Camera added: {camera.name} ({camera_id}) with URL: {stream_url}")
         return camera_id
     
     def remove_camera(self, camera_id: str) -> bool:
