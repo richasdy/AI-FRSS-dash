@@ -35,3 +35,5 @@ export const DB = {
     sequelize,
     Sequelize,
 };
+
+DB.Users.belongsTo(DB.Roles, { foreignKey: 'role_id', as: 'role' });

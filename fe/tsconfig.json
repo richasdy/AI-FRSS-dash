@@ -11,6 +11,7 @@
 		"strict": true,
 		"moduleResolution": "bundler",
 		"baseUrl": ".",
+		"lib": ["esnext", "dom"],
 		"paths": {
 			"@/*": ["src/*"],
 			"$lib/*": ["src/lib/*"]

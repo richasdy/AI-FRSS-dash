@@ -4,7 +4,7 @@ import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
 export type RoleCreationAttributes = Optional<Role, 'id' | 'created_at' | 'updated_at'>;
 
 export class RoleModel extends Model<Role, RoleCreationAttributes> implements Role {
-  public id!: string;
+  public id!: number;
   public name!: string;
   public description!: string;
   public permissions!: string[]; 
@@ -20,6 +20,7 @@ export default function (sequelize: Sequelize): typeof RoleModel {
         allowNull: false,
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
+        autoIncrement: true
       },
       name: {
         type: DataTypes.STRING,

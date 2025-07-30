@@ -29,7 +29,8 @@ module.exports = {
           key: 'id'
         },
         onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        onDelete: 'SET NULL',
+        field: 'role_id',
       },
       createdAt: {
         allowNull: false,

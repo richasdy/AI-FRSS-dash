@@ -1,7 +1,8 @@
 import { User } from '@/interfaces/user.interfaces';
 import { Sequelize, DataTypes, Model, Optional } from 'sequelize';
+import { RoleModel } from './role.model';
 
-export type UserCreationAttributes = Optional<User, 'id' | 'username' | 'created_at' | 'updated_at'>;
+export type UserCreationAttributes = Optional<User, 'id' | 'username' | 'created_at' | 'updated_at' | 'isApproved' | 'roleId' | 'department' | 'isOnline' | 'lastLogin'>;
 
 export class UserModel
     extends Model<User, UserCreationAttributes>
@@ -15,6 +16,15 @@ export class UserModel
     public isApproved!: boolean;
     public created_at!: Date;
     public updated_at!: Date;
+
+    // Tambahan properti untuk frontend
+    public roleId!: number | null; 
+    public department!: string | null; 
+    public isOnline!: boolean; 
+    public lastLogin!: Date | null;
+
+    // Relasi (akan diinisialisasi di index.ts database)
+    public readonly role?: RoleModel; 
 
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
@@ -48,10 +58,36 @@ export default function (sequelize: Sequelize): typeof UserModel {
             },
             isApproved: {
                 type: DataTypes.BOOLEAN,
-                field: 'is_approved', 
+                field: 'is_approved',
                 allowNull: false,
                 defaultValue: false,
-              },              
+            },
+            // Definisi kolom baru
+            roleId: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                references: {
+                    model: 'Roles',
+                    key: 'id',
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'SET NULL',
+            },
+            department: {
+                type: DataTypes.STRING,
+                allowNull: true, 
+            },
+            isOnline: {
+                type: DataTypes.BOOLEAN,
+                field: 'is_online', 
+                allowNull: false,
+                defaultValue: false,
+            },
+            lastLogin: {
+                type: DataTypes.DATE,
+                field: 'last_login', 
+                allowNull: true,
+            },
             created_at: DataTypes.DATE,
             updated_at: DataTypes.DATE,
         },

@@ -1,13 +1,15 @@
-  export interface Role {
-    id: number;
+export interface Role {
+    id: string;
     name: string;
     description: string;
-    permissions: string[];
+    permissions: string[]; 
     created_at: Date;
     updated_at: Date;
-}
-
-export type RoleCreationData = {
+  }
+  
+  
+  export type RoleCreationData = {
     name: string;
     description: string;
-};
+  };
+  
