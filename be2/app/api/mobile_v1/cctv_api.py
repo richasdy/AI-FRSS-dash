@@ -5,8 +5,8 @@ Handles IP camera management and monitoring
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from typing import List, Optional
 
-from services.cctv_service import cctv_service
-from schemas.video_schemas import (
+from app.services.cctv_service import cctv_service
+from app.schemas.video_schemas import (
     AddCameraRequest, CameraInfo, CameraListResponse,
     SystemStatusResponse, DetectionHistoryResponse, CameraConfig
 )

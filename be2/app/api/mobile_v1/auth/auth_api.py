@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from services.auth_service import auth_service
-from schemas.auth_schemas import AdminSignUp, AdminLogin
+from app.services.auth_service import auth_service
+from app.schemas.auth_schemas import AdminSignUp, AdminLogin
 
 router = APIRouter()
 

@@ -5,7 +5,7 @@ Handles live video detection via WebSocket
 from fastapi import APIRouter, WebSocket, HTTPException, Query
 from typing import Optional
 
-from services.realtime_service import realtime_service
+from app.services.realtime_service import realtime_service
 
 router = APIRouter()
 

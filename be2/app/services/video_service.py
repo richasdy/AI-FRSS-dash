@@ -16,7 +16,7 @@ from PIL import Image
 import json
 from datetime import datetime, timedelta
 
-from services.models_service import yolo_service
+from app.services.models_service import yolo_service
 
 logger = logging.getLogger(__name__)
 

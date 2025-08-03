@@ -6,7 +6,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.orm import declarative_base
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
-from services.database_service import database_service
+from app.services.database_service import database_service
 
 # Create declarative base
 Base = declarative_base()

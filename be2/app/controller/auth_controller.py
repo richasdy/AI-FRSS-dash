@@ -6,7 +6,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from dotenv import load_dotenv
-from models.auth import get_admin_by_username, add_admin
+from app.models.auth import get_admin_by_username, add_admin
 
 load_dotenv()
 

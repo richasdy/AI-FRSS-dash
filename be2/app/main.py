@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import logging
-from services.database_service import database_service
+from app.services.database_service import database_service
 
 # Setup logging
 logging.basicConfig(
@@ -66,7 +66,7 @@ async def root():
 
 # Import and include routers
 try:
-    from controller.auth_controller import router as auth_router
+    from app.controller.auth_controller import router as auth_router
     app.include_router(auth_router, prefix="/mobile/v1/auth", tags=["authentication"])
     logger.info("Authentication routes loaded successfully")
 except ImportError as e:
@@ -74,28 +74,28 @@ except ImportError as e:
 
 # Import YOLO Model APIs
 try:
-    from api.mobile_v1.models.intrusion_api import router as intrusion_router
+    from app.api.mobile_v1.models.intrusion_api import router as intrusion_router
     app.include_router(intrusion_router, prefix="/mobile/v1/intrusion", tags=["intrusion-detection"])
     logger.info("Intrusion detection routes loaded successfully")
 except ImportError as e:
     logger.warning(f"Intrusion routes could not be loaded: {str(e)}")
 
 try:
-    from api.mobile_v1.models.people_api import router as people_router
+    from app.api.mobile_v1.models.people_api import router as people_router
     app.include_router(people_router, prefix="/mobile/v1/people", tags=["people-detection"])
     logger.info("People detection routes loaded successfully")
 except ImportError as e:
     logger.warning(f"People routes could not be loaded: {str(e)}")
 
 try:
-    from api.mobile_v1.models.security_api import router as security_router
+    from app.api.mobile_v1.models.security_api import router as security_router
     app.include_router(security_router, prefix="/mobile/v1/security_threats", tags=["security-detection"])
     logger.info("Security threats detection routes loaded successfully")
 except ImportError as e:
     logger.warning(f"Security routes could not be loaded: {str(e)}")
 
 try:
-    from api.mobile_v1.models.vehicle_api import router as vehicle_router
+    from app.api.mobile_v1.models.vehicle_api import router as vehicle_router
     app.include_router(vehicle_router, prefix="/mobile/v1/vehicle", tags=["vehicle-detection"])
     logger.info("Vehicle detection routes loaded successfully")
 except ImportError as e:
@@ -103,21 +103,21 @@ except ImportError as e:
 
 # Video Processing APIs
 try:
-    from api.mobile_v1.features.video_upload_api import router as video_upload_router
+    from app.api.mobile_v1.features.video_upload_api import router as video_upload_router
     app.include_router(video_upload_router, prefix="/mobile/v1/video", tags=["video-processing"])
     logger.info("Video upload routes loaded successfully")
 except ImportError as e:
     logger.warning(f"Video upload routes could not be loaded: {str(e)}")
 
 try:
-    from api.mobile_v1.features.realtime_api import router as realtime_router
+    from app.api.mobile_v1.features.realtime_api import router as realtime_router
     app.include_router(realtime_router, prefix="/mobile/v1/realtime", tags=["realtime-detection"])
     logger.info("Real-time detection routes loaded successfully")
 except ImportError as e:
     logger.warning(f"Real-time routes could not be loaded: {str(e)}")
 
 try:
-    from api.mobile_v1.features.cctv_api import router as cctv_router
+    from app.api.mobile_v1.features.cctv_api import router as cctv_router
     app.include_router(cctv_router, prefix="/mobile/v1/cctv", tags=["cctv-monitoring"])
     logger.info("CCTV monitoring routes loaded successfully")
 except ImportError as e:

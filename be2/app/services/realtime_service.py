@@ -11,7 +11,7 @@ import logging
 from datetime import datetime
 import base64
 
-from services.models_service import yolo_service
+from app.services.models_service import yolo_service
 
 logger = logging.getLogger(__name__)
 

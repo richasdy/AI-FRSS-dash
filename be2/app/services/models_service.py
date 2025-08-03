@@ -22,7 +22,7 @@ except ImportError:
     YOLO_AVAILABLE = False
     print("Warning: YOLO dependencies not available")
 
-from models.models import save_detection_result, get_detection_history, update_model_metadata
+from app.models.models import save_detection_result, get_detection_history, update_model_metadata
 
 logger = logging.getLogger(__name__)
 

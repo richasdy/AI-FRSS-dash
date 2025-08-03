@@ -14,7 +14,7 @@ from threading import Thread
 import time
 from urllib.parse import urlparse
 
-from services.models_service import yolo_service
+from app.services.models_service import yolo_service
 
 logger = logging.getLogger(__name__)
 

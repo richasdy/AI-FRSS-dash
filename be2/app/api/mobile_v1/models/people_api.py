@@ -10,8 +10,8 @@ For new models:
 """
 
 from fastapi import APIRouter, HTTPException
-from services.models_service import yolo_service
-from schemas.models_schemas import DetectionRequest, DetectionResponse, ModelsListResponse
+from app.services.models_service import yolo_service
+from app.schemas.models_schemas import DetectionRequest, DetectionResponse, ModelsListResponse
 
 # 🔧 CHANGE THIS FOR NEW MODELS
 MODEL_TYPE = "people"

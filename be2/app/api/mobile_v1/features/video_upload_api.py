@@ -5,8 +5,8 @@ Handles video file upload and batch processing
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from typing import List
 
-from services.video_service import video_service
-from schemas.video_schemas import VideoJobResponse, JobStatusResponse, VideoResultsResponse
+from app.services.video_service import video_service
+from app.schemas.video_schemas import VideoJobResponse, JobStatusResponse, VideoResultsResponse
 
 router = APIRouter()
 
