@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response, RequestHandler } from 'express'; // Import RequestHandler
+import { NextFunction, Request, Response, RequestHandler } from 'express'; 
 import { getAllUsersService, getUserProfileService } from './user.service';
-import { repo } from './user.repo'; // Import the repo which now uses Sequelize
+import { repo } from './user.repo'; 
 
-export const getUserProfileController: RequestHandler = async ( // Added RequestHandler type
+export const getUserProfileController: RequestHandler = async (
     req,
     res,
-    next,
+    next
 ): Promise<void> => {
     try {
         const authorization = req.headers.authorization;
@@ -23,13 +23,10 @@ export const getUserProfileController: RequestHandler = async ( // Added Request
     }
 };
 
-export const getAllUsersController: RequestHandler = async (req, res, next): Promise<void> => { // Added RequestHandler type
+export const getAllUsersController: RequestHandler = async (req, res, next): Promise<void> => { 
     try {
-        const search = req.query.search;
+        const { search, roleFilter, statusFilter, approvalFilter } = req.query;
         const authorization = req.headers.authorization;
-
-        console.log('Search:', search);
-        console.log('Authorization:', authorization);
 
         if (!authorization) {
             res.status(404).json({ message: 'Users not found' });
@@ -39,8 +36,15 @@ export const getAllUsersController: RequestHandler = async (req, res, next): Pro
         const accessToken = authorization.split(' ')[1];
         console.log('Access token:', accessToken);
 
-        const response = await getAllUsersService(accessToken, search as string);
-        console.log('Response data:', response);
+        const response = await getAllUsersService(
+            accessToken, 
+            search as string, 
+            roleFilter as string, 
+            statusFilter as 'Online' | 'Offline' | '', 
+            approvalFilter as 'Approved' | 'Pending' | ''
+        );
+        
+        console.log('Response data from service:', response);
 
         res.status(200).json({ message: 'User data fetched', data: response });
     } catch (error) {
@@ -49,13 +53,13 @@ export const getAllUsersController: RequestHandler = async (req, res, next): Pro
     }
 };
 
-export const approveUser: RequestHandler = async (req, res) => { // Added RequestHandler type
+export const approveUser: RequestHandler = async (req, res) => { 
     try {
         const userId = req.params.id;
-        const [affectedRows] = await repo.approveUser(userId); // Use repo method
+        const [affectedRows] = await repo.approveUser(userId);
         if (affectedRows === 0) {
             res.status(404).json({ message: 'User not found or already approved' });
-            return; // Explicitly return void
+            return; 
         }
         res.status(200).json({ message: 'User approved successfully' });
     } catch (error) {
@@ -64,13 +68,13 @@ export const approveUser: RequestHandler = async (req, res) => { // Added Reques
     }
 };
 
-export const rejectUser: RequestHandler = async (req, res) => { // Added RequestHandler type
+export const rejectUser: RequestHandler = async (req, res) => { 
     try {
         const userId = req.params.id;
-        const deletedRows = await repo.rejectUser(userId); // Use repo method
+        const deletedRows = await repo.rejectUser(userId); 
         if (deletedRows === 0) {
             res.status(404).json({ message: 'User not found' });
-            return; // Explicitly return void
+            return; 
         }
         res.status(200).json({ message: 'User rejected and deleted successfully' });
     } catch (error) {
@@ -79,9 +83,9 @@ export const rejectUser: RequestHandler = async (req, res) => { // Added Request
     }
 };
 
-export const createUser: RequestHandler = async (req, res) => { // Added RequestHandler type
+export const createUser: RequestHandler = async (req, res) => { 
     try {
-        const user = await repo.createUser(req.body); // Use repo method
+        const user = await repo.createUser(req.body); 
         res.status(201).json({ message: 'User created successfully', data: user });
     } catch (error) {
         console.error(error);
@@ -89,17 +93,15 @@ export const createUser: RequestHandler = async (req, res) => { // Added Request
     }
 };
 
-export const updateUser: RequestHandler = async (req, res) => { // Added RequestHandler type
+export const updateUser: RequestHandler = async (req, res) => { 
     try {
         const userId = req.params.id;
-        // Sequelize update returns [affectedRows], not the updated user object directly
-        const [affectedRows] = await repo.updateUser(userId, req.body); // Use repo method
+        const [affectedRows] = await repo.updateUser(userId, req.body); 
         if (affectedRows === 0) {
             res.status(404).json({ message: 'User not found or no changes made' });
-            return; // Explicitly return void
+            return; 
         }
-        // To return the updated user, you'd typically fetch it after the update
-        const updatedUser = await repo.getUserProfile(userId); // Fetch the updated user
+        const updatedUser = await repo.getUserProfile(userId); 
         res.status(200).json({ message: 'User updated successfully', data: updatedUser });
     } catch (error) {
         console.error(error);
@@ -107,13 +109,13 @@ export const updateUser: RequestHandler = async (req, res) => { // Added Request
     }
 };
 
-export const deleteUser: RequestHandler = async (req, res) => { // Added RequestHandler type
+export const deleteUser: RequestHandler = async (req, res) => { 
     try {
         const userId = req.params.id;
-        const deletedRows = await repo.deleteUser(userId); // Use repo method
+        const deletedRows = await repo.deleteUser(userId); 
         if (deletedRows === 0) {
             res.status(404).json({ message: 'User not found' });
-            return; // Explicitly return void
+            return; 
         }
         res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
