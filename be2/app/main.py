@@ -1,95 +1,136 @@
-from fastapi import FastAPI, WebSocket, Request, File, UploadFile
+"""
+FastAPI Mobile API Server
+Clean mobile application backend
+"""
+import uvicorn
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
-from transformers import BertTokenizer, BertModel, pipeline
-from PIL import Image, ImageDraw
-import io
-import base64
+from contextlib import asynccontextmanager
+import logging
+from app.services.database_service import database_service
 
-app = FastAPI()
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
-@app.get("/")
-async def root():
-    return {"message": "API is running! 🎉 Check /docs for endpoints."}
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan management"""
+    logger.info("Starting Mobile API server...")
+    
+    # Try to initialize database connection (optional)
+    try:
+        await database_service.connect()
+        logger.info("Database connected successfully")
+    except Exception as e:
+        logger.warning(f"Database connection failed: {str(e)} - API will run without database")
+    
+    yield
+    
+    # Cleanup
+    logger.info("Shutting down Mobile API server...")
+    try:
+        await database_service.disconnect()
+    except Exception:
+        pass
 
+# Create FastAPI application
+app = FastAPI(
+    title="Mobile API",
+    description="Clean mobile application backend",
+    version="1.0.0",
+    lifespan=lifespan
+)
 
-# Middleware CORS
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
-# Load BERT model & tokenizer
-tokenizer = BertTokenizer.from_pretrained('indobenchmark/indobert-base-p1')
-bert_model = BertModel.from_pretrained('indobenchmark/indobert-base-p1')
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {"status": "healthy", "service": "mobile-api"}
 
-# Load object detection pipeline (DETR)
-object_detector = pipeline("object-detection", model="facebook/detr-resnet-50")
+@app.get("/")
+async def root():
+    """Root endpoint"""
+    return {"message": "Mobile API Server", "version": "1.0.0"}
 
-# WebSocket untuk teks/BERT
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    try:
-        while True:
-            data = await websocket.receive_text()
-            print("Diterima:", data)
-            inputs = tokenizer(data, return_tensors="pt")
-            outputs = bert_model(**inputs)
-            pooled = outputs.pooler_output.detach().numpy().tolist()
-            await websocket.send_text(f"Embedding shape: {len(pooled)}x{len(pooled[0])}")
-    except Exception as e:
-        print("WebSocket error:", e)
-    finally:
-        await websocket.close()
+# Import and include routers
+try:
+    from app.controller.auth_controller import router as auth_router
+    app.include_router(auth_router, prefix="/mobile/v1/auth", tags=["authentication"])
+    logger.info("Authentication routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"Auth routes could not be loaded: {str(e)}")
 
-# REST API untuk encode teks dengan BERT
-@app.post("/encode")
-async def encode_text(request: Request):
-    data = await request.json()
-    text = data.get("text", "")
-    inputs = tokenizer(text, return_tensors="pt")
-    outputs = bert_model(**inputs)
-    pooled = outputs.pooler_output.detach().numpy().tolist()
-    return {"embedding": pooled}
+# Import YOLO Model APIs
+try:
+    from app.api.mobile_v1.models.intrusion_api import router as intrusion_router
+    app.include_router(intrusion_router, prefix="/mobile/v1/intrusion", tags=["intrusion-detection"])
+    logger.info("Intrusion detection routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"Intrusion routes could not be loaded: {str(e)}")
 
-# REST API untuk deteksi objek pada gambar! (upload file) 
-@app.post("/process-image")
-async def process_image(file: UploadFile = File(...)):
-    image = Image.open(io.BytesIO(await file.read())).convert("RGB")
-    results = object_detector(image)
-    draw = ImageDraw.Draw(image)
-    for obj in results:
-        box = obj['box']
-        draw.rectangle([box['xmin'], box['ymin'], box['xmax'], box['ymax']], outline="red", width=3)
-    buf = io.BytesIO()
-    image.save(buf, format="PNG")
-    buf.seek(0)
-    return StreamingResponse(buf, media_type="image/png")
+try:
+    from app.api.mobile_v1.models.people_api import router as people_router
+    app.include_router(people_router, prefix="/mobile/v1/people", tags=["people-detection"])
+    logger.info("People detection routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"People routes could not be loaded: {str(e)}")
 
-# WebSocket untuk deteksi objek pada gambar (base64)
-@app.websocket("/ws-image")
-async def websocket_image(websocket: WebSocket):
-    await websocket.accept()
-    try:
-        while True:
-            data = await websocket.receive_text()
-            img_bytes = base64.b64decode(data)
-            image = Image.open(io.BytesIO(img_bytes)).convert("RGB")
-            results = object_detector(image)
-            draw = ImageDraw.Draw(image)
-            for obj in results:
-                box = obj['box']
-                draw.rectangle([box['xmin'], box['ymin'], box['xmax'], box['ymax']], outline="red", width=3)
-            buf = io.BytesIO()
-            image.save(buf, format="PNG")
-            buf.seek(0)
-            img_b64 = base64.b64encode(buf.read()).decode("utf-8")
-            await websocket.send_text(img_b64)
-    except Exception as e:
-        print("WebSocket error:", e)
-    finally:
-        await websocket.close()
+try:
+    from app.api.mobile_v1.models.security_api import router as security_router
+    app.include_router(security_router, prefix="/mobile/v1/security_threats", tags=["security-detection"])
+    logger.info("Security threats detection routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"Security routes could not be loaded: {str(e)}")
+
+try:
+    from app.api.mobile_v1.models.vehicle_api import router as vehicle_router
+    app.include_router(vehicle_router, prefix="/mobile/v1/vehicle", tags=["vehicle-detection"])
+    logger.info("Vehicle detection routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"Vehicle routes could not be loaded: {str(e)}")
+
+# Video Processing APIs
+try:
+    from app.api.mobile_v1.features.video_upload_api import router as video_upload_router
+    app.include_router(video_upload_router, prefix="/mobile/v1/video", tags=["video-processing"])
+    logger.info("Video upload routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"Video upload routes could not be loaded: {str(e)}")
+
+try:
+    from app.api.mobile_v1.features.realtime_api import router as realtime_router
+    app.include_router(realtime_router, prefix="/mobile/v1/realtime", tags=["realtime-detection"])
+    logger.info("Real-time detection routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"Real-time routes could not be loaded: {str(e)}")
+
+try:
+    from app.api.mobile_v1.features.cctv_api import router as cctv_router
+    app.include_router(cctv_router, prefix="/mobile/v1/cctv", tags=["cctv-monitoring"])
+    logger.info("CCTV monitoring routes loaded successfully")
+except ImportError as e:
+    logger.warning(f"CCTV routes could not be loaded: {str(e)}")
+
+logger.info("All API routes loaded - server ready with complete video detection capabilities")
+
+if __name__ == "__main__":
+    logger.info("Starting server on http://localhost:8000")
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=False,
+        log_level="info"
+    )

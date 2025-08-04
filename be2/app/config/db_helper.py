@@ -1,18 +1,38 @@
-import os
-import mysql.connector
-from dotenv import load_dotenv
+"""
+Database Helper Configuration
+Database connection and configuration helper
+"""
+import logging
 
-# Load environment variables from .env
-load_dotenv()
+logger = logging.getLogger(__name__)
 
-# Buat koneksi ke database
-db_config = {
-    'host': os.getenv("DB_HOST"),
-    'port': int(os.getenv("DB_PORT")),
-    'user': os.getenv("DB_USER"),
-    'password': os.getenv("DB_PASSWORD"),
-    'database': os.getenv("DB_NAME")
-}
+class DatabaseService:
+    """Mock database service for development"""
+    
+    def __init__(self):
+        self.connected = False
+        logger.info("Database service initialized (no actual database configured)")
+    
+    async def connect(self):
+        """Mock database connection"""
+        try:
+            # Mock connection
+            self.connected = True
+            logger.info("Database mock connection established")
+            return True
+        except Exception as e:
+            logger.error(f"Database connection failed: {e}")
+            return False
+    
+    async def disconnect(self):
+        """Mock database disconnection"""
+        try:
+            self.connected = False
+            logger.info("Database mock connection closed")
+            return True
+        except Exception as e:
+            logger.error(f"Database disconnection failed: {e}")
+            return False
 
-def get_connection():
-    return mysql.connector.connect(**db_config)
+# Create global instance
+database_service = DatabaseService()
