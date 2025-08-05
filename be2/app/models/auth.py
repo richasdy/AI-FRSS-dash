@@ -15,15 +15,18 @@ class User(Base):
     """User model for authentication"""
     __tablename__ = "users"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
-    username = Column(String(50), unique=True, index=True, nullable=False)
-    email = Column(String(100), unique=True, index=True, nullable=False)
-    hashed_password = Column(String(255), nullable=False)
-    full_name = Column(String(100), nullable=True)
-    is_active = Column(Boolean, default=True)
-    is_admin = Column(Boolean, default=False)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(100), nullable=False)
+    email = Column(String(100), unique=True, nullable=False)
+    password = Column(String(255), nullable=False)
+    role_id = Column(Integer, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    username = Column(String(50), unique=True, nullable=True)
+    is_approved = Column(Boolean, default=False)
+    department = Column(String(100), nullable=True)
+    is_online = Column(Boolean, default=False)
+    last_login = Column(DateTime(timezone=True), nullable=True)
 
 # Database operations for authentication
 async def get_admin_by_username(username: str):
