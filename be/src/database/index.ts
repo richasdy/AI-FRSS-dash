@@ -2,6 +2,8 @@ import { Sequelize } from 'sequelize';
 import logger from '@/utils/logger';
 import userModel from './models/user.model';
 import roleModel from './models/role.model';
+import monitoringModel from './models/monitoring.model';
+import alertModel from './models/alert.model';
 import { NODE_ENV } from '@/config';
 import path from 'path';
 
@@ -32,6 +34,8 @@ const sequelize = new Sequelize({
 export const DB = {
     Users: userModel(sequelize),
     Roles: roleModel(sequelize),
+    Monitoring: monitoringModel(sequelize),
+    Alerts: alertModel(sequelize),
     sequelize,
     Sequelize,
 };

@@ -82,16 +82,16 @@
   }, {} as Record<string, number>) || {};
 
   // Fungsi untuk memformat tanggal lastLogin
-  function formatLastLogin(dateString: Date | undefined): string {
-      if (!dateString) return 'N/A';
-      try {
-          const date = typeof dateString === 'string' ? parseISO(dateString) : dateString;
-          return formatDistanceToNow(date, { addSuffix: true });
-      } catch (e) {
-          console.error("Failed to parse date:", dateString, e);
-          return 'Invalid Date';
-      }
-  }
+function formatLastLogin(dateString: Date | null | undefined): string { 
+    if (!dateString) return 'N/A';
+    try {
+        const date = typeof dateString === 'string' ? parseISO(dateString) : dateString;
+        return formatDistanceToNow(date, { addSuffix: true });
+    } catch (e) {
+        console.error("Failed to parse date:", dateString, e);
+        return 'Invalid Date';
+    }
+}
 
   // Fungsi untuk menerapkan filter
   function applyFilters() {
