@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Model Image Check - WebSocket Test Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .header {
+            text-align: center;
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .connection-status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .connected { background-color: #d4edda; color: #155724; }
+        .disconnected { background-color: #f8d7da; color: #721c24; }
+        .connecting { background-color: #fff3cd; color: #856404; }
+        
+        .upload-area {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            background-color: #f8f9fa;
+            border-color: #0056b3;
+        }
+        .upload-area.dragover {
+            background-color: #e3f2fd;
+            border-color: #1976d2;
+        }
+        
+        input[type="file"] { display: none; }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .control-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .control-group input, .control-group select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .model-selection {
+            margin: 20px 0;
+        }
+        .model-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .model-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .model-checkbox:hover {
+            background-color: #f8f9fa;
+        }
+        .model-checkbox input:checked + label {
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-primary:hover { background-color: #0056b3; }
+        .btn-success { background-color: #28a745; color: white; }
+        .btn-success:hover { background-color: #1e7e34; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        .btn-danger:hover { background-color: #c82333; }
+        
+        .preview-area {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .preview-image {
+            max-width: 100%;
+            max-height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .results {
+            margin-top: 20px;
+        }
+        .result-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        .result-header {
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        .detection-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 3px;
+            padding: 8px;
+            margin: 5px 0;
+        }
+        .confidence-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #dc3545, #ffc107, #28a745);
+            transition: width 0.3s;
+        }
+        
+        .logs {
+            max-height: 300px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry {
+            margin: 2px 0;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        .log-info { background-color: #d1ecf1; }
+        .log-success { background-color: #d4edda; }
+        .log-error { background-color: #f8d7da; }
+        .log-warning { background-color: #fff3cd; }
+        
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .controls { grid-template-columns: 1fr; }
+            .model-checkboxes { grid-template-columns: 1fr; }
+            .action-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🖼️ Multi-Model Image Check</h1>
+            <p>WebSocket Test Client for AI-FRSS Surveillance System</p>
+        </div>
+        
+        <div id="connectionStatus" class="connection-status disconnected">
+            ⚫ Disconnected
+        </div>
+        
+        <div class="upload-area" id="uploadArea">
+            <p>📁 Click to select image or drag and drop here</p>
+            <input type="file" id="imageInput" accept="image/*">
+        </div>
+        
+        <div class="preview-area" id="previewArea" style="display: none;">
+            <img id="previewImage" class="preview-image" alt="Preview">
+        </div>
+        
+        <div class="model-selection">
+            <label><strong>Select Models to Use:</strong></label>
+            <div class="model-checkboxes">
+                <div class="model-checkbox">
+                    <input type="checkbox" id="model_intrusion" value="intrusion" checked>
+                    <label for="model_intrusion">🚨 Intrusion Detection</label>
+                </div>
+                <div class="model-checkbox">
+                    <input type="checkbox" id="model_people" value="people" checked>
+                    <label for="model_people">👥 People Detection</label>
+                </div>
+                <div class="model-checkbox">
+                    <input type="checkbox" id="model_security" value="security_threats" checked>
+                    <label for="model_security">⚠️ Security Threats</label>
+                </div>
+                <div class="model-checkbox">
+                    <input type="checkbox" id="model_vehicle" value="vehicle" checked>
+                    <label for="model_vehicle">🚗 Vehicle Detection</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="confidence">Confidence Threshold:</label>
+                <input type="range" id="confidence" min="0.1" max="0.9" step="0.1" value="0.5">
+                <span id="confidenceValue">0.5</span>
+            </div>
+            <div class="control-group">
+                <label for="iouThreshold">IoU Threshold:</label>
+                <input type="range" id="iouThreshold" min="0.1" max="0.9" step="0.05" value="0.45">
+                <span id="iouValue">0.45</span>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button id="connectBtn" class="btn-primary">🔌 Connect WebSocket</button>
+            <button id="checkImageBtn" class="btn-success" disabled>🔍 Check Image</button>
+            <button id="getModelsBtn" class="btn-primary" disabled>📋 Get Available Models</button>
+            <button id="clearResultsBtn" class="btn-danger">🗑️ Clear Results</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h3>📊 Detection Results</h3>
+        <div id="results"></div>
+    </div>
+    
+    <div class="container">
+        <h3>📝 Connection Logs</h3>
+        <div id="logs" class="logs"></div>
+    </div>
+
+    <script>
+        class MultiModelImageChecker {
+            constructor() {
+                this.ws = null;
+                this.isConnected = false;
+                this.currentImage = null;
+                
+                this.initializeElements();
+                this.setupEventListeners();
+            }
+            
+            initializeElements() {
+                this.elements = {
+                    connectionStatus: document.getElementById('connectionStatus'),
+                    connectBtn: document.getElementById('connectBtn'),
+                    checkImageBtn: document.getElementById('checkImageBtn'),
+                    getModelsBtn: document.getElementById('getModelsBtn'),
+                    clearResultsBtn: document.getElementById('clearResultsBtn'),
+                    uploadArea: document.getElementById('uploadArea'),
+                    imageInput: document.getElementById('imageInput'),
+                    previewArea: document.getElementById('previewArea'),
+                    previewImage: document.getElementById('previewImage'),
+                    confidence: document.getElementById('confidence'),
+                    confidenceValue: document.getElementById('confidenceValue'),
+                    iouThreshold: document.getElementById('iouThreshold'),
+                    iouValue: document.getElementById('iouValue'),
+                    results: document.getElementById('results'),
+                    logs: document.getElementById('logs')
+                };
+            }
+            
+            setupEventListeners() {
+                // Connection
+                this.elements.connectBtn.addEventListener('click', () => this.toggleConnection());
+                
+                // Image upload
+                this.elements.uploadArea.addEventListener('click', () => this.elements.imageInput.click());
+                this.elements.imageInput.addEventListener('change', (e) => this.handleImageSelect(e));
+                
+                // Drag and drop
+                this.elements.uploadArea.addEventListener('dragover', (e) => this.handleDragOver(e));
+                this.elements.uploadArea.addEventListener('drop', (e) => this.handleDrop(e));
+                
+                // Controls
+                this.elements.confidence.addEventListener('input', (e) => {
+                    this.elements.confidenceValue.textContent = e.target.value;
+                });
+                this.elements.iouThreshold.addEventListener('input', (e) => {
+                    this.elements.iouValue.textContent = e.target.value;
+                });
+                
+                // Actions
+                this.elements.checkImageBtn.addEventListener('click', () => this.checkImage());
+                this.elements.getModelsBtn.addEventListener('click', () => this.getAvailableModels());
+                this.elements.clearResultsBtn.addEventListener('click', () => this.clearResults());
+            }
+            
+            toggleConnection() {
+                if (this.isConnected) {
+                    this.disconnect();
+                } else {
+                    this.connect();
+                }
+            }
+            
+            connect() {
+                const wsUrl = 'ws://localhost:8000/ws/check-image';
+                this.log('Connecting to WebSocket...', 'info');
+                
+                this.updateConnectionStatus('connecting');
+                
+                try {
+                    this.ws = new WebSocket(wsUrl);
+                    
+                    this.ws.onopen = () => {
+                        this.isConnected = true;
+                        this.updateConnectionStatus('connected');
+                        this.log('✅ Connected to WebSocket server', 'success');
+                    };
+                    
+                    this.ws.onmessage = (event) => {
+                        const data = JSON.parse(event.data);
+                        this.handleMessage(data);
+                    };
+                    
+                    this.ws.onclose = () => {
+                        this.isConnected = false;
+                        this.updateConnectionStatus('disconnected');
+                        this.log('❌ WebSocket connection closed', 'warning');
+                        this.ws = null;
+                    };
+                    
+                    this.ws.onerror = (error) => {
+                        this.log(`❌ WebSocket error: ${error}`, 'error');
+                        this.updateConnectionStatus('disconnected');
+                    };
+                    
+                } catch (error) {
+                    this.log(`❌ Connection failed: ${error}`, 'error');
+                    this.updateConnectionStatus('disconnected');
+                }
+            }
+            
+            disconnect() {
+                if (this.ws) {
+                    this.ws.close();
+                    this.ws = null;
+                }
+                this.isConnected = false;
+                this.updateConnectionStatus('disconnected');
+            }
+            
+            updateConnectionStatus(status) {
+                const statusEl = this.elements.connectionStatus;
+                statusEl.className = `connection-status ${status}`;
+                
+                switch (status) {
+                    case 'connected':
+                        statusEl.innerHTML = '🟢 Connected';
+                        this.elements.connectBtn.textContent = '🔌 Disconnect';
+                        this.elements.checkImageBtn.disabled = false;
+                        this.elements.getModelsBtn.disabled = false;
+                        break;
+                    case 'connecting':
+                        statusEl.innerHTML = '🟡 Connecting...';
+                        this.elements.connectBtn.disabled = true;
+                        break;
+                    case 'disconnected':
+                        statusEl.innerHTML = '⚫ Disconnected';
+                        this.elements.connectBtn.textContent = '🔌 Connect WebSocket';
+                        this.elements.connectBtn.disabled = false;
+                        this.elements.checkImageBtn.disabled = true;
+                        this.elements.getModelsBtn.disabled = true;
+                        break;
+                }
+            }
+            
+            handleMessage(data) {
+                this.log(`📨 Received: ${data.type}`, 'info');
+                
+                switch (data.type) {
+                    case 'connection_established':
+                        this.log(`✅ Connection established with ID: ${data.client_id}`, 'success');
+                        this.log(`Available models: ${data.available_models.join(', ')}`, 'info');
+                        break;
+                        
+                    case 'multi_detection_result':
+                        this.displayResults(data);
+                        break;
+                        
+                    case 'available_models':
+                        this.displayAvailableModels(data.models);
+                        break;
+                        
+                    case 'pong':
+                        this.log('🏓 Pong received', 'success');
+                        break;
+                        
+                    case 'error':
+                        this.log(`❌ Error: ${data.error || data.message}`, 'error');
+                        break;
+                        
+                    default:
+                        this.log(`❓ Unknown message type: ${data.type}`, 'warning');
+                }
+            }
+            
+            handleImageSelect(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.processImage(file);
+                }
+            }
+            
+            handleDragOver(event) {
+                event.preventDefault();
+                this.elements.uploadArea.classList.add('dragover');
+            }
+            
+            handleDrop(event) {
+                event.preventDefault();
+                this.elements.uploadArea.classList.remove('dragover');
+                
+                const file = event.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    this.processImage(file);
+                }
+            }
+            
+            processImage(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const base64 = e.target.result.split(',')[1]; // Remove data:image/...;base64, prefix
+                    this.currentImage = base64;
+                    
+                    // Show preview
+                    this.elements.previewImage.src = e.target.result;
+                    this.elements.previewArea.style.display = 'block';
+                    
+                    this.log(`📸 Image loaded: ${file.name} (${(file.size/1024).toFixed(1)}KB)`, 'success');
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            getSelectedModels() {
+                const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+                return Array.from(checkboxes).map(cb => cb.value);
+            }
+            
+            checkImage() {
+                if (!this.currentImage) {
+                    this.log('❌ No image loaded', 'error');
+                    return;
+                }
+                
+                if (!this.isConnected) {
+                    this.log('❌ Not connected to WebSocket', 'error');
+                    return;
+                }
+                
+                const selectedModels = this.getSelectedModels();
+                if (selectedModels.length === 0) {
+                    this.log('❌ No models selected', 'error');
+                    return;
+                }
+                
+                const message = {
+                    type: 'check_image',
+                    message_id: `check_${Date.now()}`,
+                    image_data: this.currentImage,
+                    models: selectedModels,
+                    confidence: parseFloat(this.elements.confidence.value),
+                    iou_threshold: parseFloat(this.elements.iouThreshold.value),
+                    return_annotated: true
+                };
+                
+                this.ws.send(JSON.stringify(message));
+                this.log(`🔍 Checking image with models: ${selectedModels.join(', ')}`, 'info');
+            }
+            
+            getAvailableModels() {
+                if (!this.isConnected) {
+                    this.log('❌ Not connected to WebSocket', 'error');
+                    return;
+                }
+                
+                const message = {
+                    type: 'get_available_models',
+                    message_id: `models_${Date.now()}`
+                };
+                
+                this.ws.send(JSON.stringify(message));
+                this.log('📋 Requesting available models...', 'info');
+            }
+            
+            displayResults(data) {
+                const { results, summary } = data;
+                
+                let html = `
+                    <div class="result-item">
+                        <div class="result-header">
+                            📊 Detection Summary (${summary.processing_time}s)
+                        </div>
+                        <p><strong>Total Detections:</strong> ${summary.total_detections}</p>
+                        <p><strong>Models Used:</strong> ${summary.models_used.join(', ')}</p>
+                        <p><strong>Success Rate:</strong> ${summary.success_rate}</p>
+                    </div>
+                `;
+                
+                for (const [model, result] of Object.entries(results)) {
+                    if (result.error) {
+                        html += `
+                            <div class="result-item">
+                                <div class="result-header">❌ ${model.toUpperCase()} - Error</div>
+                                <p style="color: #dc3545;">${result.error}</p>
+                            </div>
+                        `;
+                    } else {
+                        const detections = result.detections || [];
+                        html += `
+                            <div class="result-item">
+                                <div class="result-header">
+                                    ${this.getModelIcon(model)} ${model.toUpperCase()} 
+                                    (${detections.length} detections, ${result.processing_time}s)
+                                </div>
+                        `;
+                        
+                        if (detections.length > 0) {
+                            detections.forEach((detection, idx) => {
+                                const confidence = (detection.confidence * 100).toFixed(1);
+                                html += `
+                                    <div class="detection-item">
+                                        <strong>${detection.class}</strong> - ${confidence}%
+                                        <div class="confidence-bar">
+                                            <div class="confidence-fill" style="width: ${confidence}%"></div>
+                                        </div>
+                                        <small>Box: [${detection.bbox.map(v => v.toFixed(1)).join(', ')}]</small>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            html += '<p style="color: #6c757d;">No detections found</p>';
+                        }
+                        
+                        html += '</div>';
+                    }
+                }
+                
+                this.elements.results.innerHTML = html;
+                this.log(`✅ Results displayed: ${summary.total_detections} total detections`, 'success');
+            }
+            
+            displayAvailableModels(models) {
+                let html = `
+                    <div class="result-item">
+                        <div class="result-header">📋 Available Models</div>
+                `;
+                
+                for (const [modelName, info] of Object.entries(models)) {
+                    html += `
+                        <div class="detection-item">
+                            <strong>${modelName}</strong><br>
+                            <small>File: ${info.file}</small><br>
+                            <small>Classes: ${info.classes.join(', ')}</small><br>
+                            <small>Status: ${info.loaded ? '✅ Loaded' : '❌ Not Loaded'}</small>
+                        </div>
+                    `;
+                }
+                
+                html += '</div>';
+                this.elements.results.innerHTML = html;
+                this.log('📋 Available models displayed', 'success');
+            }
+            
+            getModelIcon(model) {
+                const icons = {
+                    'intrusion': '🚨',
+                    'people': '👥',
+                    'security_threats': '⚠️',
+                    'vehicle': '🚗'
+                };
+                return icons[model] || '🔍';
+            }
+            
+            clearResults() {
+                this.elements.results.innerHTML = '';
+                this.log('🗑️ Results cleared', 'info');
+            }
+            
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry log-${type}`;
+                logEntry.textContent = `[${timestamp}] ${message}`;
+                
+                this.elements.logs.appendChild(logEntry);
+                this.elements.logs.scrollTop = this.elements.logs.scrollHeight;
+            }
+        }
+        
+        // Initialize the application
+        const imageChecker = new MultiModelImageChecker();
+    </script>
+</body>
+</html>

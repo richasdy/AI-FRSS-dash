@@ -84,8 +84,13 @@ class UniversalYOLOService:
                 classes = list(model.names.values())
                 self.model_configs[model_type]["classes"] = classes
                 
-                # Update database metadata
-                await update_model_metadata(model_type, self.model_configs[model_type]["file"], classes)
+                # Update database metadata (optional - silent fail if DB unavailable)
+                try:
+                    await update_model_metadata(model_type, self.model_configs[model_type]["file"], classes)
+                except Exception as db_error:
+                    # Silently skip database metadata update if DB is unavailable
+                    logger.debug(f"Database metadata update skipped for {model_type}: {db_error}")
+                    pass
             
             logger.info(f"Model {model_type} loaded successfully")
             return True
@@ -159,7 +164,7 @@ class UniversalYOLOService:
             
             processing_time = time.time() - start_time
             
-            # Save to database (optional)
+            # Save to database (optional - silent fail if DB unavailable)
             try:
                 await save_detection_result(
                     model_type=model_type,
@@ -170,7 +175,9 @@ class UniversalYOLOService:
                     image_size=image_size
                 )
             except Exception as db_error:
-                logger.warning(f"Failed to save detection result: {db_error}")
+                # Silently skip database save if DB is unavailable
+                logger.debug(f"Database save skipped for {model_type}: {db_error}")
+                pass
             
             return {
                 "success": True,

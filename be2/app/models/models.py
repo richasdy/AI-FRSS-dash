@@ -67,7 +67,7 @@ async def save_detection_result(model_type: str, detections: list, processing_ti
         await database_service.execute_query(query, values)
         return True
     except Exception as e:
-        print(f"Error saving detection result: {e}")
+        # Silently fail if database is unavailable - detection still works
         return False
 
 async def get_detection_history(model_type: str = None, limit: int = 100):
@@ -85,7 +85,7 @@ async def get_detection_history(model_type: str = None, limit: int = 100):
             query = "SELECT * FROM detection_results ORDER BY created_at DESC LIMIT :limit"
             return await database_service.fetch_all(query, {"limit": limit})
     except Exception as e:
-        print(f"Error getting detection history: {e}")
+        # Silently fail if database is unavailable
         return []
 
 async def update_model_metadata(model_type: str, model_file: str, classes: list):
@@ -122,7 +122,7 @@ async def update_model_metadata(model_type: str, model_file: str, classes: list)
         await database_service.execute_query(query, values)
         return True
     except Exception as e:
-        print(f"Error updating model metadata: {e}")
+        # Silently fail if database is unavailable - models still work
         return False
 
 # Export commonly used items

@@ -23,19 +23,32 @@ class DatabaseService:
     
     def _initialize_engine(self):
         """Initialize the database engine"""
+        # Use SQLite database from project root
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+        sqlite_path = os.path.join(project_root, "sv-fs.sqlite")
+        
         database_url = os.getenv(
             "DATABASE_URL", 
-            "postgresql+asyncpg://root:root123@localhost:5432/sv_fs"
+            f"sqlite+aiosqlite:///{sqlite_path}"
         )
         
-        self.engine = create_async_engine(
-            database_url,
-            echo=os.getenv("DEBUG", "false").lower() == "true",
-            pool_size=10,
-            max_overflow=20,
-            pool_pre_ping=True,
-            pool_recycle=3600
-        )
+        # For SQLite, use different engine configuration
+        if database_url.startswith("sqlite"):
+            self.engine = create_async_engine(
+                database_url,
+                echo=os.getenv("DEBUG", "false").lower() == "true",
+                pool_pre_ping=True
+            )
+        else:
+            # For PostgreSQL or other databases
+            self.engine = create_async_engine(
+                database_url,
+                echo=os.getenv("DEBUG", "false").lower() == "true",
+                pool_size=10,
+                max_overflow=20,
+                pool_pre_ping=True,
+                pool_recycle=3600
+            )
         
         self.session_factory = async_sessionmaker(
             self.engine,
@@ -47,7 +60,11 @@ class DatabaseService:
         """Test database connection"""
         try:
             async with self.engine.begin() as conn:
-                await conn.execute("SELECT 1")
+                # Use appropriate test query based on database type
+                if "sqlite" in str(self.engine.url):
+                    await conn.execute("SELECT 1")
+                else:
+                    await conn.execute("SELECT 1")
             logger.info("Database connection established")
         except Exception as e:
             logger.error(f"Database connection failed: {str(e)}")
