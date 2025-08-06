@@ -1,36 +1,34 @@
-export const securityIncidentsChartData = {
-    options: {
-        chart: { type: "bar" as const },
-        series: [
-            {
-                name: 'Motion Detection',
-                data: [65, 59, 80, 81, 56, 40, 30],
-            },
-            {
-                name: 'Face Recognition',
-                data: [28, 48, 40, 19, 36, 27, 20],
-            },
-            {
-                name: 'Intrusion Alert',
-                data: [10, 15, 8, 12, 5, 3, 2],
-            }
-        ],
-        xaxis: { categories: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] },
-        legend: {
-            position: 'top',
-            horizontalAlign: 'center',
-        },
-    }
-};
-
 export const incidentsChartData = {
     options: {
-        chart: { type: 'pie' as const },
-        series: [35, 25, 20, 15, 5],
-        labels: ['Front Gate', 'Lobby', 'Parking Lot', 'Warehouse', 'Other'],
-        legend: {
-            position: 'bottom',
-            horizontalAlign: 'center',
+        chart: {
+            type: 'pie' as 'pie', 
         },
-    }
+        series: [44, 55, 13, 43, 22],
+        labels: ['Front Gate', 'Lobby', 'Parking Lot', 'Warehouse', 'Server Room'],
+        legend: {
+            position: 'bottom' as 'bottom',
+            horizontalAlign: 'center' as 'center', 
+        },
+    },
+};
+
+export const securityIncidentsChartData = {
+    options: {
+        chart: {
+            type: 'bar' as 'bar',
+        },
+        series: [
+            {
+                name: 'Incidents',
+                data: [30, 40, 45, 50, 49, 60, 70, 91, 125],
+            },
+        ],
+        xaxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+        },
+        legend: {
+            position: 'top' as 'top', 
+            horizontalAlign: 'right' as 'right', 
+        },
+    },
 };
