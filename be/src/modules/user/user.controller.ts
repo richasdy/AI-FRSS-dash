@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, RequestHandler } from 'express'; 
-import { getAllUsersService, getUserProfileService } from './user.service';
+import { getAllUsersService, getUserProfileService, getAttendanceReportFromDB } from './user.service'; 
 import { repo } from './user.repo'; 
 
 export const getUserProfileController: RequestHandler = async (
@@ -34,8 +34,6 @@ export const getAllUsersController: RequestHandler = async (req, res, next): Pro
         }
 
         const accessToken = authorization.split(' ')[1];
-        console.log('Access token:', accessToken);
-
         const response = await getAllUsersService(
             accessToken, 
             search as string, 
@@ -44,12 +42,25 @@ export const getAllUsersController: RequestHandler = async (req, res, next): Pro
             approvalFilter as 'Approved' | 'Pending' | ''
         );
         
-        console.log('Response data from service:', response);
-
         res.status(200).json({ message: 'User data fetched', data: response });
     } catch (error) {
         console.error('getAllUsersController error:', error);
         next(error);
+    }
+};
+
+export const getAttendanceReportController: RequestHandler = async (req, res, next): Promise<void> => {
+    try {
+        const { locationFilter, dateRangeFilter } = req.query;
+        const data = await getAttendanceReportFromDB(
+            locationFilter as string,
+            dateRangeFilter as string
+        );
+        res.json({ data });
+    } catch (err) {
+        console.error('getAttendanceReportController error:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+        next(err);
     }
 };
 

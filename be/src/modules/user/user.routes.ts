@@ -6,7 +6,8 @@ import {
   updateUser,
   deleteUser,
   approveUser,
-  rejectUser
+  rejectUser,
+  getAttendanceReportController
 } from './user.controller';
 import { authMiddleware } from '@/middlewares/auth.middleware';
 
@@ -20,5 +21,7 @@ userRouter.put('/:id', updateUser);
 userRouter.delete('/:id', deleteUser);
 userRouter.patch('/:id/approve', approveUser);
 userRouter.patch('/:id/reject', rejectUser);
+userRouter.get('/attendance-report', getAttendanceReportController); 
+
 
 export default userRouter;
