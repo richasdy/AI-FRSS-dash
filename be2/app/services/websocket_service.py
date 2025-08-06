@@ -1,263 +1,200 @@
-"""
-Unified WebSocket Service
-Central WebSocket management for real-time surveillance system
-"""
 import json
-import uuid
-import asyncio
 import logging
-import sys
-import os
-from typing import Dict, List, Any, Optional, Set
 from datetime import datetime
-from fastapi import WebSocket, WebSocketDisconnect
+from typing import Dict, Any
+from fastapi import WebSocket
 
-# Add the parent directory to Python path for imports
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(os.path.dirname(current_dir))
-if parent_dir not in sys.path:
-    sys.path.insert(0, parent_dir)
-
-try:
-    from app.services.models_service import yolo_service
-except ImportError:
-    # Fallback for direct execution
-    from models_service import yolo_service
+# Import YOLO service for real detection
+from app.services.models_service import yolo_service
 
 logger = logging.getLogger(__name__)
 
-class WebSocketConnectionManager:
-    """Manages all WebSocket connections and message routing"""
+class WebSocketManager:
+    """Simple WebSocket connection manager"""
     
     def __init__(self):
-        # Connection storage
         self.active_connections: Dict[str, WebSocket] = {}
-        self.connection_metadata: Dict[str, Dict] = {}
-        
-        # Topic subscriptions for pub/sub pattern
-        self.subscriptions: Dict[str, Set[str]] = {
-            "detections": set(),
-            "video_processing": set(),
-            "cctv_feeds": set(),
-            "system_alerts": set()
-        }
-        
-        # Session statistics
-        self.session_stats: Dict[str, Dict] = {}
-        
-    async def connect(self, websocket: WebSocket, client_id: str = None) -> str:
-        """Connect new WebSocket client"""
+        self.connection_types: Dict[str, str] = {}
+    
+    async def connect(self, websocket: WebSocket, client_id: str, connection_type: str = "general"):
+        """Connect WebSocket client"""
         await websocket.accept()
-        
-        # Generate unique client ID if not provided
-        if not client_id:
-            client_id = f"client_{uuid.uuid4().hex[:8]}"
-        
-        # Store connection
         self.active_connections[client_id] = websocket
-        self.connection_metadata[client_id] = {
-            "connected_at": datetime.now().isoformat(),
-            "ip_address": websocket.client.host if websocket.client else "unknown",
-            "subscriptions": [],
-            "last_activity": datetime.now().isoformat()
-        }
-        self.session_stats[client_id] = {
-            "messages_sent": 0,
-            "messages_received": 0,
-            "detections_processed": 0,
-            "errors": 0
-        }
+        self.connection_types[client_id] = connection_type
         
-        logger.info(f"WebSocket client connected: {client_id}")
+        logger.info(f"Client {client_id} connected (type: {connection_type})")
         
         # Send welcome message
-        await self.send_personal_message(client_id, {
+        await self.send_message(client_id, {
             "type": "connection_established",
             "client_id": client_id,
-            "server_time": datetime.now().isoformat(),
-            "available_topics": list(self.subscriptions.keys())
+            "connection_type": connection_type,
+            "timestamp": datetime.now().isoformat()
         })
-        
-        return client_id
     
     def disconnect(self, client_id: str):
         """Disconnect WebSocket client"""
         if client_id in self.active_connections:
-            # Remove from subscriptions
-            for topic_subscribers in self.subscriptions.values():
-                topic_subscribers.discard(client_id)
-            
-            # Clean up data
             del self.active_connections[client_id]
-            del self.connection_metadata[client_id]
-            del self.session_stats[client_id]
-            
-            logger.info(f"WebSocket client disconnected: {client_id}")
+            del self.connection_types[client_id]
+            logger.info(f"Client {client_id} disconnected")
     
-    async def send_personal_message(self, client_id: str, message: Dict[str, Any]):
+    async def send_message(self, client_id: str, message: Dict[str, Any]):
         """Send message to specific client"""
         if client_id in self.active_connections:
             try:
-                websocket = self.active_connections[client_id]
-                await websocket.send_text(json.dumps(message))
-                self.session_stats[client_id]["messages_sent"] += 1
-                self.connection_metadata[client_id]["last_activity"] = datetime.now().isoformat()
+                await self.active_connections[client_id].send_text(json.dumps(message))
             except Exception as e:
                 logger.error(f"Error sending message to {client_id}: {e}")
-                self.session_stats[client_id]["errors"] += 1
     
-    async def broadcast_to_topic(self, topic: str, message: Dict[str, Any]):
-        """Broadcast message to all subscribers of a topic"""
-        if topic in self.subscriptions:
-            subscribers = self.subscriptions[topic].copy()
-            for client_id in subscribers:
-                await self.send_personal_message(client_id, message)
-    
-    def subscribe_to_topic(self, client_id: str, topic: str):
-        """Subscribe client to a topic"""
-        if topic in self.subscriptions and client_id in self.active_connections:
-            self.subscriptions[topic].add(client_id)
-            self.connection_metadata[client_id]["subscriptions"].append(topic)
-            logger.info(f"Client {client_id} subscribed to {topic}")
-    
-    def unsubscribe_from_topic(self, client_id: str, topic: str):
-        """Unsubscribe client from a topic"""
-        if topic in self.subscriptions:
-            self.subscriptions[topic].discard(client_id)
-            if client_id in self.connection_metadata:
-                self.connection_metadata[client_id]["subscriptions"] = [
-                    t for t in self.connection_metadata[client_id]["subscriptions"] if t != topic
-                ]
-            logger.info(f"Client {client_id} unsubscribed from {topic}")
-    
-    def get_connection_stats(self) -> Dict[str, Any]:
-        """Get overall connection statistics"""
+    def get_stats(self) -> Dict[str, Any]:
+        """Get connection statistics"""
         return {
             "total_connections": len(self.active_connections),
             "active_clients": list(self.active_connections.keys()),
-            "topic_subscriptions": {
-                topic: len(subscribers) for topic, subscribers in self.subscriptions.items()
-            },
-            "server_uptime": datetime.now().isoformat()
+            "connection_types": self.connection_types
         }
 
-class UnifiedWebSocketService:
-    """Main WebSocket service handling all real-time communications"""
+class WebSocketService:
+    """WebSocket message handler service - Based on be3 pattern"""
     
     def __init__(self):
-        self.connection_manager = WebSocketConnectionManager()
-        self.message_handlers = {
-            "ping": self._handle_ping,
-            "subscribe": self._handle_subscribe,
-            "unsubscribe": self._handle_unsubscribe,
-            "detect": self._handle_detection,
-            "video_stream": self._handle_video_stream,
-            "cctv_control": self._handle_cctv_control,
-            "get_stats": self._handle_get_stats,
-            "get_models": self._handle_get_models
-        }
+        self.manager = WebSocketManager()
     
-    async def handle_client_connection(self, websocket: WebSocket, client_id: str = None):
-        """Handle new WebSocket client connection"""
-        client_id = await self.connection_manager.connect(websocket, client_id)
-        
+    async def handle_message(self, client_id: str, message_text: str):
+        """Handle incoming WebSocket message"""
         try:
-            while True:
-                # Receive message from client
-                data = await websocket.receive_text()
-                await self._process_message(client_id, data)
-                
-        except WebSocketDisconnect:
-            logger.info(f"Client {client_id} disconnected")
-        except Exception as e:
-            logger.error(f"Error handling client {client_id}: {e}")
-            await self.connection_manager.send_personal_message(client_id, {
-                "type": "error",
-                "message": str(e),
-                "timestamp": datetime.now().isoformat()
-            })
-        finally:
-            self.connection_manager.disconnect(client_id)
-    
-    async def _process_message(self, client_id: str, raw_message: str):
-        """Process incoming WebSocket message"""
-        try:
-            message = json.loads(raw_message)
+            message = json.loads(message_text)
             message_type = message.get("type")
-            message_id = message.get("message_id", str(uuid.uuid4()))
             
-            # Update client stats
-            self.connection_manager.session_stats[client_id]["messages_received"] += 1
-            
-            if message_type in self.message_handlers:
-                await self.message_handlers[message_type](client_id, message, message_id)
+            # Route messages based on type (similar to be3 webSocketController)
+            if message_type == "ping":
+                await self._handle_ping(client_id, message)
+            elif message_type == "recognize_face":
+                await self._handle_recognize_face(client_id, message)
+            elif message_type == "insert_face":
+                await self._handle_insert_face(client_id, message)
+            elif message_type == "insert_admin":
+                await self._handle_insert_admin(client_id, message)
+            elif message_type == "LOGIN_REQUEST":
+                await self._handle_login(client_id, message)
+            elif message_type == "GET_PROFILE_REQUEST":
+                await self._handle_get_profile(client_id, message)
+            elif message_type == "UPDATE_PROFILE_REQUEST":
+                await self._handle_update_profile(client_id, message)
+            elif message_type == "INSERT_ATTENDANCE":
+                await self._handle_insert_attendance(client_id, message)
+            elif message_type == "check_image":
+                await self._handle_check_image(client_id, message)
+            elif message_type == "multi_model_detection":
+                await self._handle_multi_model_detection(client_id, message)
+            elif message_type == "get_available_models":
+                await self._handle_get_available_models(client_id, message)
             else:
-                await self.connection_manager.send_personal_message(client_id, {
+                await self.manager.send_message(client_id, {
                     "type": "error",
                     "message": f"Unknown message type: {message_type}",
-                    "message_id": message_id,
                     "timestamp": datetime.now().isoformat()
                 })
                 
         except json.JSONDecodeError:
-            await self.connection_manager.send_personal_message(client_id, {
+            await self.manager.send_message(client_id, {
                 "type": "error",
                 "message": "Invalid JSON format",
                 "timestamp": datetime.now().isoformat()
             })
         except Exception as e:
-            logger.error(f"Error processing message from {client_id}: {e}")
-            await self.connection_manager.send_personal_message(client_id, {
+            logger.error(f"Error handling message from {client_id}: {str(e)}")
+            await self.manager.send_message(client_id, {
                 "type": "error",
-                "message": str(e),
+                "message": f"Internal server error: {str(e)}",
                 "timestamp": datetime.now().isoformat()
             })
     
-    # Message Handlers
-    async def _handle_ping(self, client_id: str, message: Dict, message_id: str):
-        """Handle ping message"""
-        await self.connection_manager.send_personal_message(client_id, {
+    # Message handlers (placeholder implementations)
+    async def _handle_ping(self, client_id: str, message: dict):
+        await self.manager.send_message(client_id, {
             "type": "pong",
-            "message_id": message_id,
             "timestamp": datetime.now().isoformat()
         })
     
-    async def _handle_subscribe(self, client_id: str, message: Dict, message_id: str):
-        """Handle topic subscription"""
-        topic = message.get("topic")
-        if topic:
-            self.connection_manager.subscribe_to_topic(client_id, topic)
-            await self.connection_manager.send_personal_message(client_id, {
-                "type": "subscription_confirmed",
-                "topic": topic,
-                "message_id": message_id,
-                "timestamp": datetime.now().isoformat()
-            })
+    async def _handle_recognize_face(self, client_id: str, message: dict):
+        await self.manager.send_message(client_id, {
+            "type": "face_recognition_result",
+            "status": "not_implemented",
+            "message": "Face recognition coming soon",
+            "timestamp": datetime.now().isoformat()
+        })
     
-    async def _handle_unsubscribe(self, client_id: str, message: Dict, message_id: str):
-        """Handle topic unsubscription"""
-        topic = message.get("topic")
-        if topic:
-            self.connection_manager.unsubscribe_from_topic(client_id, topic)
-            await self.connection_manager.send_personal_message(client_id, {
-                "type": "unsubscription_confirmed",
-                "topic": topic,
-                "message_id": message_id,
-                "timestamp": datetime.now().isoformat()
-            })
+    async def _handle_insert_face(self, client_id: str, message: dict):
+        await self.manager.send_message(client_id, {
+            "type": "face_insert_result",
+            "status": "not_implemented",
+            "message": "Face insertion coming soon",
+            "timestamp": datetime.now().isoformat()
+        })
     
-    async def _handle_detection(self, client_id: str, message: Dict, message_id: str):
-        """Handle YOLO detection request"""
+    async def _handle_insert_admin(self, client_id: str, message: dict):
+        await self.manager.send_message(client_id, {
+            "type": "admin_insert_result",
+            "status": "not_implemented",
+            "message": "Admin management coming soon",
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    async def _handle_login(self, client_id: str, message: dict):
+        await self.manager.send_message(client_id, {
+            "type": "login_response",
+            "status": "not_implemented",
+            "message": "Authentication coming soon",
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    async def _handle_get_profile(self, client_id: str, message: dict):
+        await self.manager.send_message(client_id, {
+            "type": "profile_response",
+            "status": "not_implemented",
+            "message": "Profile system coming soon",
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    async def _handle_update_profile(self, client_id: str, message: dict):
+        await self.manager.send_message(client_id, {
+            "type": "profile_update_result",
+            "status": "not_implemented",
+            "message": "Profile update coming soon",
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    async def _handle_insert_attendance(self, client_id: str, message: dict):
+        await self.manager.send_message(client_id, {
+            "type": "attendance_result",
+            "status": "not_implemented",
+            "message": "Attendance system coming soon",
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    async def _handle_check_image(self, client_id: str, message: dict):
+        """Handle real image detection using YOLO"""
+        message_id = message.get("message_id", f"detection_{int(datetime.now().timestamp())}")
+        
         try:
+            # Extract parameters
+            image_data = message.get("image_data")
             model_type = message.get("model", "intrusion")
-            image_data = message.get("data")
             confidence = message.get("confidence", 0.5)
             iou_threshold = message.get("iou_threshold", 0.45)
             
             if not image_data:
-                raise ValueError("No image data provided")
+                await self.manager.send_message(client_id, {
+                    "type": "error",
+                    "message_id": message_id,
+                    "error": "No image data provided",
+                    "timestamp": datetime.now().isoformat()
+                })
+                return
             
-            # Perform detection
+            # Perform real YOLO detection
             result = await yolo_service.detect_objects(
                 model_type=model_type,
                 image_data=image_data,
@@ -265,90 +202,113 @@ class UnifiedWebSocketService:
                 iou_threshold=iou_threshold
             )
             
-            # Update stats
-            self.connection_manager.session_stats[client_id]["detections_processed"] += 1
-            
-            # Send result back to client
-            response = {
+            # Send successful result
+            await self.manager.send_message(client_id, {
                 "type": "detection_result",
                 "message_id": message_id,
                 "model_type": model_type,
-                "result": result,
+                "success": result.get("success", True),
+                "detections": result.get("detections", []),
+                "total_detections": result.get("total_detections", 0),
+                "processing_time": result.get("processing_time", 0),
+                "image_size": result.get("image_size", []),
                 "timestamp": datetime.now().isoformat()
-            }
+            })
             
-            await self.connection_manager.send_personal_message(client_id, response)
-            
-            # Broadcast to detection subscribers if enabled
-            if result.get("detections"):
-                await self.connection_manager.broadcast_to_topic("detections", {
-                    "type": "detection_alert",
-                    "client_id": client_id,
-                    "model_type": model_type,
-                    "detections_count": len(result["detections"]),
-                    "timestamp": datetime.now().isoformat()
-                })
-                
         except Exception as e:
-            await self.connection_manager.send_personal_message(client_id, {
-                "type": "detection_error",
+            await self.manager.send_message(client_id, {
+                "type": "error",
                 "message_id": message_id,
-                "error": str(e),
+                "error": f"Detection failed: {str(e)}",
                 "timestamp": datetime.now().isoformat()
             })
     
-    async def _handle_video_stream(self, client_id: str, message: Dict, message_id: str):
-        """Handle video streaming (placeholder for future implementation)"""
-        await self.connection_manager.send_personal_message(client_id, {
-            "type": "video_stream_response",
-            "message_id": message_id,
-            "status": "received",
-            "message": "Video streaming not yet implemented",
-            "timestamp": datetime.now().isoformat()
-        })
-    
-    async def _handle_cctv_control(self, client_id: str, message: Dict, message_id: str):
-        """Handle CCTV control commands (placeholder for future implementation)"""
-        await self.connection_manager.send_personal_message(client_id, {
-            "type": "cctv_control_response",
-            "message_id": message_id,
-            "status": "received",
-            "message": "CCTV control not yet implemented",
-            "timestamp": datetime.now().isoformat()
-        })
-    
-    async def _handle_get_stats(self, client_id: str, message: Dict, message_id: str):
-        """Handle statistics request"""
-        stats = {
-            "connection_stats": self.connection_manager.get_connection_stats(),
-            "client_stats": self.connection_manager.session_stats.get(client_id, {}),
-            "client_metadata": self.connection_manager.connection_metadata.get(client_id, {})
-        }
+    async def _handle_multi_model_detection(self, client_id: str, message: dict):
+        """Handle multi-model detection"""
+        message_id = message.get("message_id", f"multi_detection_{int(datetime.now().timestamp())}")
         
-        await self.connection_manager.send_personal_message(client_id, {
-            "type": "stats_response",
-            "message_id": message_id,
-            "stats": stats,
-            "timestamp": datetime.now().isoformat()
-        })
+        try:
+            # Extract parameters
+            image_data = message.get("image_data")
+            models_to_use = message.get("models", ["intrusion", "people", "security_threats", "vehicle"])
+            confidence = message.get("confidence", 0.5)
+            iou_threshold = message.get("iou_threshold", 0.45)
+            
+            if not image_data:
+                await self.manager.send_message(client_id, {
+                    "type": "error",
+                    "message_id": message_id,
+                    "error": "No image data provided",
+                    "timestamp": datetime.now().isoformat()
+                })
+                return
+            
+            # Run detection on all requested models
+            results = {}
+            total_detections = 0
+            successful_models = []
+            
+            for model in models_to_use:
+                try:
+                    result = await yolo_service.detect_objects(
+                        model_type=model,
+                        image_data=image_data,
+                        confidence=confidence,
+                        iou_threshold=iou_threshold
+                    )
+                    results[model] = result
+                    if result.get("detections"):
+                        total_detections += len(result["detections"])
+                        successful_models.append(model)
+                except Exception as e:
+                    results[model] = {
+                        "success": False,
+                        "error": str(e),
+                        "detections": [],
+                        "processing_time": 0
+                    }
+            
+            # Send results
+            await self.manager.send_message(client_id, {
+                "type": "multi_detection_result",
+                "message_id": message_id,
+                "results": results,
+                "summary": {
+                    "total_detections": total_detections,
+                    "models_used": successful_models,
+                    "models_requested": models_to_use,
+                    "success_rate": f"{len(successful_models)}/{len(models_to_use)}"
+                },
+                "timestamp": datetime.now().isoformat()
+            })
+            
+        except Exception as e:
+            await self.manager.send_message(client_id, {
+                "type": "error",
+                "message_id": message_id,
+                "error": f"Multi-model detection failed: {str(e)}",
+                "timestamp": datetime.now().isoformat()
+            })
     
-    async def _handle_get_models(self, client_id: str, message: Dict, message_id: str):
-        """Handle available models request"""
+    async def _handle_get_available_models(self, client_id: str, message: dict):
+        """Handle get available models request"""
+        message_id = message.get("message_id", f"models_{int(datetime.now().timestamp())}")
+        
         try:
             models_info = await yolo_service.list_all_models()
-            await self.connection_manager.send_personal_message(client_id, {
-                "type": "models_response",
+            await self.manager.send_message(client_id, {
+                "type": "available_models",
                 "message_id": message_id,
                 "models": models_info,
                 "timestamp": datetime.now().isoformat()
             })
         except Exception as e:
-            await self.connection_manager.send_personal_message(client_id, {
-                "type": "models_error",
+            await self.manager.send_message(client_id, {
+                "type": "error",
                 "message_id": message_id,
-                "error": str(e),
+                "error": f"Failed to get models info: {str(e)}",
                 "timestamp": datetime.now().isoformat()
             })
 
-# Global service instance
-websocket_service = UnifiedWebSocketService()
+# Global instance
+websocket_service = WebSocketService()
