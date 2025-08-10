@@ -17,13 +17,11 @@ export class UserModel
     public created_at!: Date;
     public updated_at!: Date;
 
-    // Tambahan properti untuk frontend
     public roleId!: number | null; 
     public department!: string | null; 
     public isOnline!: boolean; 
     public lastLogin!: Date | null;
 
-    // Relasi (akan diinisialisasi di index.ts database)
     public readonly role?: RoleModel; 
 
     public readonly createdAt!: Date;
@@ -62,7 +60,6 @@ export default function (sequelize: Sequelize): typeof UserModel {
                 allowNull: false,
                 defaultValue: false,
             },
-            // Definisi kolom baru
             roleId: {
                 type: DataTypes.INTEGER,
                 allowNull: true,

@@ -53,3 +53,16 @@ export const getAlertHistoryFromDB = async (
         order: [['createdAt', 'DESC']] 
     });
 };
+
+export const getAlertsTodayCount = async () => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const count = await DB.Alerts.count({
+        where: {
+            createdAt: { [Op.gte]: today }
+        }
+    });
+
+    return count;
+};

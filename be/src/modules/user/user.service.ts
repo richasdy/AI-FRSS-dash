@@ -4,6 +4,8 @@ import { verifyJWT } from '@/middlewares/jwt.service';
 import { JWT_ACCESS_TOKEN_SECRET } from '@/config';
 import type { User } from '@/interfaces/user.interfaces';
 import type { AttendanceReportData } from '@/interfaces/report.interfaces'; 
+import { DB } from '@/database'; 
+
 
 export const getUserProfileService = async (accessToken: string): Promise<User> => {
     const decodeToken = await verifyJWT(
@@ -37,7 +39,6 @@ export const getAllUsersService = async (
     return users;
 };
 
-// Fungsi baru untuk mendapatkan laporan kehadiran
 export const getAttendanceReportFromDB = async (
     locationFilter: string = '',
     dateRangeFilter: string = ''
@@ -61,4 +62,13 @@ export const getAttendanceReportFromDB = async (
             status: status
         };
     });
+};
+
+export const getAttendancesTodayCount = async () => {
+    const count = await DB.Users.count({ where: { isOnline: true } });
+    return count;
+};
+
+export const getBlacklistDetectionCount = async () => {
+    return 3;
 };

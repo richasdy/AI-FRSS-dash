@@ -1,5 +1,4 @@
-import type { Role as ExternalRole } from './role.interfaces'; // Menggunakan alias untuk menghindari konflik nama jika Role juga didefinisikan di sini
-
+import type { Role as ExternalRole } from './role.interfaces'; 
 export interface User {
     id: string;
     email: string;

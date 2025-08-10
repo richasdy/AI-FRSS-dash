@@ -4,6 +4,7 @@ import userModel from './models/user.model';
 import roleModel from './models/role.model';
 import monitoringModel from './models/monitoring.model';
 import alertModel from './models/alert.model';
+import recordingModel from './models/recording.model';
 import { NODE_ENV } from '@/config';
 import path from 'path';
 
@@ -36,8 +37,10 @@ export const DB = {
     Roles: roleModel(sequelize),
     Monitoring: monitoringModel(sequelize),
     Alerts: alertModel(sequelize),
+    Recordings: recordingModel(sequelize), 
     sequelize,
     Sequelize,
 };
 
 DB.Users.belongsTo(DB.Roles, { foreignKey: 'role_id', as: 'role' });
+DB.Recordings.belongsTo(DB.Monitoring, { foreignKey: 'camera_id', as: 'camera' });
