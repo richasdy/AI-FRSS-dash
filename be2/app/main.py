@@ -182,6 +182,24 @@ async def websocket_attendance_endpoint(websocket: WebSocket, client_id: str):
     """Attendance-specific WebSocket endpoint"""
     await handle_websocket_connection(websocket, client_id, "attendance")
 
+# Import WebSocket routers (MVC refined)
+from app.api.v1 import auth_ws, users_ws, monitoring_ws, alerts_ws
+
+# Import REST API routers
+from app.api.v1 import auth_api, users_api, files_api, mobile_api
+
+# Register WebSocket routers
+app.include_router(auth_ws.router, prefix="/ws/auth", tags=["Auth WS"])
+app.include_router(users_ws.router, prefix="/ws/users", tags=["Users WS"])
+app.include_router(monitoring_ws.router, prefix="/ws/monitoring", tags=["Monitoring WS"])
+app.include_router(alerts_ws.router, prefix="/ws/alerts", tags=["Alerts WS"])
+
+# Register REST API routers
+app.include_router(auth_api.router, tags=["Authentication REST"])
+app.include_router(users_api.router, tags=["Users REST"])  
+app.include_router(files_api.router, tags=["Files REST"])
+app.include_router(mobile_api.router, tags=["Mobile REST"])
+
 # Enhanced API endpoints for system monitoring
 @app.get("/api/health")
 async def get_system_health():
@@ -355,7 +373,7 @@ async def test_yolo_health():
 
 if __name__ == "__main__":
     uvicorn.run(
-        "main:app",
+        "app.main:app",
         host="127.0.0.1",
         port=8080,
         reload=True,

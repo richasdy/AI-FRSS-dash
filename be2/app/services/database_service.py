@@ -27,28 +27,15 @@ class DatabaseService:
         project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
         sqlite_path = os.path.join(project_root, "sv-fs.sqlite")
         
-        database_url = os.getenv(
-            "DATABASE_URL", 
-            f"sqlite+aiosqlite:///{sqlite_path}"
-        )
+        # Always use SQLite for now
+        database_url = f"sqlite+aiosqlite:///{sqlite_path}"
         
         # For SQLite, use different engine configuration
-        if database_url.startswith("sqlite"):
-            self.engine = create_async_engine(
-                database_url,
-                echo=os.getenv("DEBUG", "false").lower() == "true",
-                pool_pre_ping=True
-            )
-        else:
-            # For PostgreSQL or other databases
-            self.engine = create_async_engine(
-                database_url,
-                echo=os.getenv("DEBUG", "false").lower() == "true",
-                pool_size=10,
-                max_overflow=20,
-                pool_pre_ping=True,
-                pool_recycle=3600
-            )
+        self.engine = create_async_engine(
+            database_url,
+            echo=os.getenv("DEBUG", "false").lower() == "true",
+            pool_pre_ping=True
+        )
         
         self.session_factory = async_sessionmaker(
             self.engine,
@@ -60,11 +47,9 @@ class DatabaseService:
         """Test database connection"""
         try:
             async with self.engine.begin() as conn:
-                # Use appropriate test query based on database type
-                if "sqlite" in str(self.engine.url):
-                    await conn.execute("SELECT 1")
-                else:
-                    await conn.execute("SELECT 1")
+                # Use text() for raw SQL queries
+                from sqlalchemy import text
+                await conn.execute(text("SELECT 1"))
             logger.info("Database connection established")
         except Exception as e:
             logger.error(f"Database connection failed: {str(e)}")
@@ -92,11 +77,12 @@ class DatabaseService:
     
     async def execute_query(self, query: str, values: dict = None):
         """Execute raw SQL query"""
+        from sqlalchemy import text
         async with self.engine.begin() as conn:
             if values:
-                result = await conn.execute(query, values)
+                result = await conn.execute(text(query), values)
             else:
-                result = await conn.execute(query)
+                result = await conn.execute(text(query))
             return result
     
     async def fetch_all(self, query: str, values: dict = None):
