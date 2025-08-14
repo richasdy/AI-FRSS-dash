@@ -2,3 +2,6 @@ venv/
 __pycache__/
 *.pyc
 .env
+.vscode/
+*.sqlite3
+.DS_Store
