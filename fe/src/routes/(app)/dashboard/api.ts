@@ -23,7 +23,7 @@ export const fetchDashboardData = async (): Promise<DashboardResponse> => {
         // masih data dummy untuk Attendance dan Blacklist 
         const attendancesToday = 30; 
         const alertsToday = recentAlerts.length; 
-        const blacklistDetections = 3; 
+        const blacklistDetections = 0; 
 
         const cameraStatusChartData = {
             options: {
@@ -86,8 +86,8 @@ export const fetchDashboardData = async (): Promise<DashboardResponse> => {
                 incidentsByLocation: incidentsChartData,
                 securityIncidents: activityTimelineChartData
             },
-            locations: allCameras, // Mengembalikan lokasi untuk filter
-            systemHealth: systemHealthData // Mengembalikan data system health
+            locations: allCameras, 
+            systemHealth: systemHealthData 
         };
     } catch (error) {
         console.error('Failed to fetch dashboard data:', error);

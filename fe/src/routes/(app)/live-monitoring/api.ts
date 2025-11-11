@@ -5,7 +5,7 @@ import type { LiveAlert } from '$lib/interfaces/alert.interfaces';
 
 export const getMonitoringFeeds = async (): Promise<MonitoringFeed[]> => {
   try {
-    const res = await api.get('/monitoring'); 
+    const res = await api.get('/monitoring/feeds'); 
     return res.data.data;
   } catch (error) {
     console.error('Failed to fetch monitoring feeds:', error);

@@ -28,12 +28,10 @@
 	  'camera': CameraIcon,
 	};
 	
-	// Fungsi untuk memulai refresh gambar
 	function startRefreshing() {
 	  intervals.forEach(clearInterval);
 	  intervals.length = 0; 
   
-	  // Tambahkan '?rand=...' untuk memaksa refresh, hanya untuk non-mjpg
 	  imageUrls.forEach((baseUrl, index) => {
 		if (baseUrl && !baseUrl.includes('mjpg')) {
 		  function refresh() {
@@ -47,13 +45,11 @@
 	  });
 	}
   
-	// Fungsi untuk memformat waktu alert
 	function formatAlertTime(date: Date): string {
 	  const d = new Date(date);
 	  return `${d.toLocaleDateString()} ${d.toLocaleTimeString()}`;
 	}
 	
-	// Fungsi untuk memuat semua data yang diperlukan
 	async function loadData() {
 	  try {
 		monitoringData = await getMonitoringFeeds();
@@ -68,7 +64,6 @@
 		
 		imageUrls = await getAllStream();
   
-		// Mulai refresh gambar setelah semua URL tersedia
 		if (Array.isArray(imageUrls) && imageUrls.length > 0) {
 		  startRefreshing();
 		} else {
@@ -79,12 +74,10 @@
 	  }
 	}
   
-	// Hentikan semua interval saat komponen dihancurkan
 	onDestroy(() => {
 	  intervals.forEach(clearInterval);
 	});
   
-	// Muat data saat komponen pertama kali dipasang
 	onMount(async () => {
 	  console.log('onMount triggered');
 	  await loadData(); 

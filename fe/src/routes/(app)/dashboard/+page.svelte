@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount, onDestroy } from 'svelte';
+    import { onMount } from 'svelte';
     import { createQuery } from '@tanstack/svelte-query';
     import { AlertCircle, Camera, UserCheck, UserX } from '@lucide/svelte';
     import Breadcrumb from '../../../components/breadcrumb/Breadcrumb.svelte';
@@ -8,20 +8,28 @@
     import type { DashboardResponse, SystemHealthData } from '$lib/interfaces/dashboard.interfaces';
     import { formatDistanceToNow } from 'date-fns';
 
+    let dashboardData = $state<DashboardResponse | null>(null);
+
     const dashboardQuery = createQuery({
         queryKey: ['dashboardData'],
         queryFn: async () => {
-            const response = await fetchDashboardData();
-            if (response && response.charts) {
-                return response;
-            } else {
-                return null;
-            }
+            return await fetchDashboardData();
+        }
+    });
+
+    const isLoading = $derived($dashboardQuery.isFetching);
+
+    $effect(() => {
+        if ($dashboardQuery.data) {
+            dashboardData = $dashboardQuery.data;
+        } else if ($dashboardQuery.error) {
+            console.error("Failed to fetch dashboard data:", $dashboardQuery.error);
+            dashboardData = null;
         }
     });
 
     const cameraStatusChartData = $derived(
-        $dashboardQuery.data?.charts?.cameraStatus || {
+        dashboardData?.charts?.cameraStatus || {
             options: {
                 chart: { type: 'donut' as const },
                 series: [0, 0, 0],
@@ -35,7 +43,7 @@
     );
 
     const activityTimelineChartData = $derived(
-        $dashboardQuery.data?.charts?.securityIncidents || {
+        dashboardData?.charts?.securityIncidents || {
             options: {
                 chart: { type: 'line' as const },
                 series: [{ name: 'Events', data: [0] }],
@@ -47,22 +55,25 @@
             }
         }
     );
+
+    onMount(() => {
+    });
 </script>
 
 <div class="flex flex-col gap-y-6">
     <Breadcrumb pageName="Dashboard" />
     <!-- Dashboard Stats -->
     <div class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-4 lg:gap-4">
-        {#if $dashboardQuery.isFetching}
+        {#if isLoading}
             <div class="col-span-full text-center py-4">Loading stats...</div>
-        {:else if $dashboardQuery.data}
+        {:else if dashboardData}
             <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03]">
                 <div class="flex items-center gap-x-4">
                     <div class="bg-brand-500 flex h-14 w-14 items-center justify-center rounded-lg">
                         <Camera class="h-6 w-6 text-white" />
                     </div>
                     <div class="flex flex-col">
-                        <p class="text-theme-lg font-semibold text-gray-800 dark:text-white/90">{$dashboardQuery.data.stats.totalCameras}</p>
+                        <p class="text-theme-lg font-semibold text-gray-800 dark:text-white/90">{dashboardData.stats.totalCameras}</p>
                         <p class="text-theme-sm text-gray-500 dark:text-white/70">Total Cameras</p>
                     </div>
                 </div>
@@ -73,7 +84,7 @@
                         <UserCheck class="h-6 w-6 text-white" />
                     </div>
                     <div class="flex flex-col">
-                        <p class="text-theme-lg font-semibold text-gray-800 dark:text-white/90">{$dashboardQuery.data.stats.attendancesToday}</p>
+                        <p class="text-theme-lg font-semibold text-gray-800 dark:text-white/90">{dashboardData.stats.attendancesToday}</p>
                         <p class="text-theme-sm text-gray-500 dark:text-white/70">Attendances Today</p>
                     </div>
                 </div>
@@ -84,7 +95,7 @@
                         <AlertCircle class="h-6 w-6 text-white" />
                     </div>
                     <div class="flex flex-col">
-                        <p class="text-theme-lg font-semibold text-gray-800 dark:text-white/90">{$dashboardQuery.data.stats.alertsToday}</p>
+                        <p class="text-theme-lg font-semibold text-gray-800 dark:text-white/90">{dashboardData.stats.alertsToday}</p>
                         <p class="text-theme-sm text-gray-500 dark:text-white/70">Alerts Today</p>
                     </div>
                 </div>
@@ -95,7 +106,7 @@
                         <UserX class="h-6 w-6 text-white" />
                     </div>
                     <div class="flex flex-col">
-                        <p class="text-theme-lg font-semibold text-gray-800 dark:text-white/90">{$dashboardQuery.data.stats.blacklistDetections}</p>
+                        <p class="text-theme-lg font-semibold text-gray-800 dark:text-white/90">{dashboardData.stats.blacklistDetections}</p>
                         <p class="text-theme-sm text-gray-500 dark:text-white/70">Blacklist Detection</p>
                     </div>
                 </div>
@@ -190,8 +201,8 @@
                     <!-- Table Header -->
                     <!-- Table Body -->
                     <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                        {#if $dashboardQuery.data && $dashboardQuery.data.recentAlerts.length > 0}
-                            {#each $dashboardQuery.data.recentAlerts.slice(0, 5) as event, index}
+                        {#if dashboardData && dashboardData.recentAlerts.length > 0}
+                            {#each dashboardData.recentAlerts.slice(0, 5) as event, index}
                                 <tr>
                                     <td class="px-5 py-4 sm:px-6">
                                         <div class="flex items-center">
@@ -253,20 +264,24 @@
             </div>
             <div class="px-6 py-5">
                 <div class="flex flex-col gap-y-4">
-                    {#each $dashboardQuery.data?.systemHealth || [] as health}
-                        <div class="flex flex-col gap-y-3">
-                            <div class="flex items-center justify-between">
-                                <p class="text-theme-md font-medium text-gray-800">{health.label}</p>
-                                <p class="text-theme-sm text-gray-800">{health.percentage}%</p>
+                    {#if dashboardData?.systemHealth}
+                        {#each dashboardData.systemHealth as health}
+                            <div class="flex flex-col gap-y-3">
+                                <div class="flex items-center justify-between">
+                                    <p class="text-theme-md font-medium text-gray-800">{health.label}</p>
+                                    <p class="text-theme-sm text-gray-800">{health.percentage}%</p>
+                                </div>
+                                <div class="relative h-3 w-full rounded-full bg-gray-200 dark:bg-gray-800">
+                                    <div
+                                        class={`bg-${health.color}-500 absolute left-0 h-full rounded-full`}
+                                        style="width: {health.percentage}%"
+                                    ></div>
+                                </div>
                             </div>
-                            <div class="relative h-3 w-full rounded-full bg-gray-200 dark:bg-gray-800">
-                                <div
-                                    class={`bg-${health.color}-500 absolute left-0 h-full rounded-full`}
-                                    style="width: {health.percentage}%"
-                                ></div>
-                            </div>
-                        </div>
-                    {/each}
+                        {/each}
+                    {:else}
+                        <div class="py-4 text-center text-gray-500">Failed to load system health data.</div>
+                    {/if}
                 </div>
             </div>
         </div>

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response, RequestHandler } from 'express'; 
-import { getAllUsersService, getUserProfileService, getAttendanceReportFromDB } from './user.service'; 
+import { getAllUsersService, getUserProfileService, getAttendanceReportFromDB, getAttendancesTodayCount,getBlacklistDetectionCount } from './user.service'; 
 import { repo } from './user.repo'; 
 
 export const getUserProfileController: RequestHandler = async (
@@ -132,5 +132,25 @@ export const deleteUser: RequestHandler = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to delete user', error });
+    }
+};
+
+export const getAttendancesTodayController: RequestHandler = async (req, res) => {
+    try {
+        const count = await getAttendancesTodayCount();
+        res.json({ data: count });
+    } catch (err) {
+        console.error('getAttendancesTodayController error:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+export const getBlacklistDetectionController: RequestHandler = async (req, res) => {
+    try {
+        const count = await getBlacklistDetectionCount();
+        res.json({ data: count });
+    } catch (err) {
+        console.error('getBlacklistDetectionController error:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 };
