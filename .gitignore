@@ -6,4 +6,4 @@ __pycache__/
 *.sqlite3
 .DS_Store
 
-be4-detectionAI/app/crops/
+be4-detectionAI/app/crops/*
