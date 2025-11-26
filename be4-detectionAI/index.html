@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People Detection Live Dashboard</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background: #f0f2f5; }
+        .container { display: flex; gap: 20px; }
+        .stream-box { flex: 2; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .events-box { flex: 1; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-height: 80vh; overflow-y: auto; }
+        h2 { margin-top: 0; }
+        .event-card { border-bottom: 1px solid #eee; padding: 10px 0; display: flex; gap: 10px; align-items: start; }
+        .event-card:last-child { border-bottom: none; }
+        .event-img { width: 80px; height: 80px; object-fit: cover; border-radius: 4px; background: #ddd; }
+        .event-details { flex: 1; }
+        .event-time { font-size: 0.8em; color: #666; }
+        .event-title { font-weight: bold; color: #d32f2f; }
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.7em; font-weight: bold; }
+        .badge-new { background: #e3f2fd; color: #1976d2; }
+        img.live-stream { width: 100%; height: auto; border-radius: 4px; }
+        .status { margin-bottom: 10px; padding: 10px; background: #e8f5e9; color: #2e7d32; border-radius: 4px; }
+        .status.error { background: #ffebee; color: #c62828; }
+    </style>
+</head>
+<body>
+    <h1>People Detection Live Dashboard</h1>
+    
+    <div id="connectionStatus" class="status">Connecting to WebSocket...</div>
+
+    <div class="container">
+        <div class="stream-box">
+            <h2>Processed Stream (AI)</h2>
+            <img src="/video_feed" class="live-stream" alt="AI Stream">
+            <div style="margin-top: 10px;">
+                <strong>Current People Count: </strong> <span id="peopleCount">0</span>
+            </div>
+        </div>
+
+        <div class="stream-box">
+            <h2>Raw Stream (Source)</h2>
+            <img src="http://200.46.196.243/mjpg/video.mjpg" class="live-stream" alt="Raw Stream">
+        </div>
+        
+        <div class="events-box">
+            <h2>Live Alerts</h2>
+            <div id="eventsList">
+                <!-- Events will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = protocol + "//" + window.location.host + "/ws/people-detection";
+        const eventsList = document.getElementById('eventsList');
+        const statusDiv = document.getElementById('connectionStatus');
+        const peopleCountSpan = document.getElementById('peopleCount');
+        
+        let ws;
+
+        function connect() {
+            console.log("Attempting to connect to WebSocket at " + wsUrl);
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                console.log("WebSocket connected!");
+                statusDiv.textContent = "Connected to System. Waiting for detections...";
+                statusDiv.className = "status";
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log("New Event:", data);
+                
+                // Update people count
+                if (data.people_count !== undefined) {
+                    peopleCountSpan.textContent = data.people_count;
+                }
+
+                // If it's a new unique detection, add to list
+                if (data.new_detection) {
+                    addEvent(data);
+                }
+            };
+
+            ws.onclose = () => {
+                statusDiv.textContent = "Disconnected. Reconnecting in 3s...";
+                statusDiv.className = "status error";
+                setTimeout(connect, 3000);
+            };
+
+            ws.onerror = (err) => {
+                console.error("WebSocket error:", err);
+                ws.close();
+            };
+        }
+
+        function addEvent(data) {
+            const div = document.createElement('div');
+            div.className = 'event-card';
+            
+            let filename = "";
+            if (data.crop_path) {
+                filename = data.crop_path.split('/').pop();
+            } else if (data.filename) {
+                filename = data.filename;
+            }
+            
+            const imageUrl = filename ? `/crops/${filename}` : '';
+
+            div.innerHTML = `
+                ${imageUrl ? `<img src="${imageUrl}" class="event-img" alt="Detection">` : ''}
+                <div class="event-details">
+                    <div class="event-title">${data.title}</div>
+                    <div class="event-time">${data.timeFormatted}</div>
+                    <div>${data.location}</div>
+                    <span class="badge badge-new">ID: ${data.id}</span>
+                </div>
+            `;
+            
+            eventsList.insertBefore(div, eventsList.firstChild);
+            
+            // Limit list size
+            if (eventsList.children.length > 50) {
+                eventsList.removeChild(eventsList.lastChild);
+            }
+        }
+
+        async function loadExistingCrops() {
+            try {
+                const response = await fetch('/crops-list');
+                const result = await response.json();
+                
+                const reversedCrops = result.crops.reverse();
+                
+                reversedCrops.forEach(filename => {
+                    let timestamp = 0;
+                    try {
+                        timestamp = parseInt(filename.split('_')[1].split('.')[0]);
+                    } catch (e) {
+                        timestamp = Date.now();
+                    }
+                    
+                    const date = new Date(timestamp);
+                    const timeFormatted = date.toLocaleTimeString();
+                    
+                    addEvent({
+                        id: timestamp,
+                        title: "Past Detection",
+                        timeFormatted: timeFormatted,
+                        location: "CCTV - Main Gate",
+                        filename: filename,
+                        crop_path: filename
+                    });
+                });
+            } catch (e) {
+                console.error("Failed to load existing crops", e);
+            }
+        }
+
+        window.onload = () => {
+            loadExistingCrops();
+            connect();
+        };
+    </script>
+</body>
+</html>

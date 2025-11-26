@@ -1,0 +1,10 @@
+Loading model: yolo_models/People_yolov8s_trained.pt
+Running detection on debug_frame.jpg
+
+image 1/1 /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/debug_frame.jpg: 384x640 3 humans, 49.0ms
+Speed: 1.2ms preprocess, 49.0ms inference, 0.5ms postprocess per image at shape (1, 3, 384, 640)
+Detected 3 objects
+Class: 0 (human), Conf: 0.1532
+Class: 0 (human), Conf: 0.1114
+Class: 0 (human), Conf: 0.1034
+Image shape: (720, 1280, 3), Mean: 127.65645073784722

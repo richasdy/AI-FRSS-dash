@@ -1,0 +1,366 @@
+INFO:     Started server process [69094]
+INFO:     Waiting for application startup.
+2025-11-27 05:23:16,208 - main - INFO - Initializing services...
+2025-11-27 05:23:16,220 - app.services.detector - INFO - Using Apple Silicon MPS acceleration.
+2025-11-27 05:23:16,220 - app.services.detector - INFO - Loading YOLO model from /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/yolo_models/People_yolov8s_trained.pt
+2025-11-27 05:23:16,385 - app.services.stream_capture - INFO - Connecting to stream: http://200.46.196.243/mjpg/video.mjpg
+2025-11-27 05:23:16,385 - app.services.stream_capture - INFO - Stream capture started.
+2025-11-27 05:23:16,385 - main - INFO - Starting detection loop
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     ('127.0.0.1', 64380) - "WebSocket /ws/people-detection" [accepted]
+INFO:     connection open
+2025-11-27 05:23:18,115 - app.services.stream_capture - INFO - Stream opened successfully.
+2025-11-27 05:23:19,594 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195799594.jpg
+2025-11-27 05:23:19,595 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195799595.jpg
+2025-11-27 05:23:19,632 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195799632.jpg
+2025-11-27 05:23:19,632 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195799632.jpg
+INFO:     127.0.0.1:64385 - "GET /crops/person_1764195799594.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64387 - "GET /crops/person_1764195799632.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64386 - "GET /crops/person_1764195799595.jpg HTTP/1.1" 200 OK
+2025-11-27 05:23:19,748 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195799747.jpg
+2025-11-27 05:23:19,748 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195799748.jpg
+INFO:     127.0.0.1:64385 - "GET /crops/person_1764195799747.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64387 - "GET /crops/person_1764195799748.jpg HTTP/1.1" 200 OK
+2025-11-27 05:23:21,580 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195801580.jpg
+2025-11-27 05:23:21,581 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195801581.jpg
+INFO:     127.0.0.1:64385 - "GET /crops/person_1764195801581.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64386 - "GET /crops/person_1764195801580.jpg HTTP/1.1" 200 OK
+2025-11-27 05:23:22,076 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195802076.jpg
+2025-11-27 05:23:22,077 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195802076.jpg
+INFO:     127.0.0.1:64387 - "GET /crops/person_1764195802076.jpg HTTP/1.1" 200 OK
+2025-11-27 05:23:22,587 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195802587.jpg
+INFO:     127.0.0.1:64385 - "GET /crops/person_1764195802587.jpg HTTP/1.1" 200 OK
+2025-11-27 05:23:22,952 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195802952.jpg
+INFO:     127.0.0.1:64386 - "GET /crops/person_1764195802952.jpg HTTP/1.1" 200 OK
+2025-11-27 05:23:23,471 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195803471.jpg
+INFO:     127.0.0.1:64387 - "GET /crops/person_1764195803471.jpg HTTP/1.1" 200 OK
+2025-11-27 05:23:25,524 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195805524.jpg
+INFO:     127.0.0.1:64385 - "GET /crops/person_1764195805524.jpg HTTP/1.1" 200 OK
+2025-11-27 05:23:26,509 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195806508.jpg
+INFO:     127.0.0.1:64386 - "GET /crops/person_1764195806508.jpg HTTP/1.1" 200 OK
+2025-11-27 05:23:34,149 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195814149.jpg
+INFO:     127.0.0.1:64399 - "GET /crops/person_1764195814149.jpg HTTP/1.1" 200 OK
+2025-11-27 05:23:36,015 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195816015.jpg
+INFO:     127.0.0.1:64399 - "GET /crops/person_1764195816015.jpg HTTP/1.1" 200 OK
+2025-11-27 05:23:37,092 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195817092.jpg
+INFO:     127.0.0.1:64399 - "GET /crops/person_1764195817092.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64399 - "GET / HTTP/1.1" 200 OK
+INFO:     connection closed
+INFO:     127.0.0.1:64399 - "GET /video_feed HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64405 - "GET /crops-list HTTP/1.1" 200 OK
+INFO:     ('127.0.0.1', 64406) - "WebSocket /ws/people-detection" [accepted]
+INFO:     connection open
+INFO:     127.0.0.1:64405 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:64405 - "GET /crops/person_1764194088994.jpg HTTP/1.1" 200 OK
+INFO:     connection closed
+2025-11-27 05:23:47,196 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195827195.jpg
+INFO:     ('127.0.0.1', 64412) - "WebSocket /ws/people-detection" [accepted]
+INFO:     connection open
+2025-11-27 05:23:49,534 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195829534.jpg
+INFO:     127.0.0.1:64418 - "GET /crops/person_1764195829534.jpg HTTP/1.1" 200 OK
+2025-11-27 05:23:57,127 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195837126.jpg
+INFO:     127.0.0.1:64420 - "GET /crops/person_1764195837126.jpg HTTP/1.1" 200 OK
+2025-11-27 05:24:06,632 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195846632.jpg
+INFO:     127.0.0.1:64422 - "GET /crops/person_1764195846632.jpg HTTP/1.1" 200 OK
+2025-11-27 05:24:25,832 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195865831.jpg
+INFO:     127.0.0.1:64424 - "GET /crops/person_1764195865831.jpg HTTP/1.1" 200 OK
+2025-11-27 05:24:33,199 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195873199.jpg
+INFO:     127.0.0.1:64427 - "GET /crops/person_1764195873199.jpg HTTP/1.1" 200 OK
+2025-11-27 05:24:37,430 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195877430.jpg
+2025-11-27 05:24:46,125 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195886125.jpg
+INFO:     127.0.0.1:64430 - "GET /crops/person_1764195877430.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64430 - "GET /crops/person_1764195886125.jpg HTTP/1.1" 200 OK
+2025-11-27 05:24:55,631 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195895631.jpg
+INFO:     127.0.0.1:64432 - "GET /crops/person_1764195895631.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:01,179 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195901178.jpg
+INFO:     127.0.0.1:64435 - "GET /crops/person_1764195901178.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:03,604 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195903603.jpg
+INFO:     127.0.0.1:64435 - "GET /crops/person_1764195903603.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:05,422 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195905422.jpg
+INFO:     127.0.0.1:64435 - "GET /crops/person_1764195905422.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:06,975 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195906974.jpg
+INFO:     127.0.0.1:64435 - "GET /crops/person_1764195906974.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:08,550 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195908550.jpg
+INFO:     127.0.0.1:64435 - "GET /crops/person_1764195908550.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:10,064 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195910064.jpg
+INFO:     127.0.0.1:64435 - "GET /crops/person_1764195910064.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:11,577 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195911577.jpg
+INFO:     127.0.0.1:64435 - "GET /crops/person_1764195911577.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:21,196 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195921196.jpg
+2025-11-27 05:25:22,196 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195922196.jpg
+2025-11-27 05:25:23,312 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195923311.jpg
+2025-11-27 05:25:24,560 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195924560.jpg
+2025-11-27 05:25:24,560 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195924560.jpg
+2025-11-27 05:25:25,561 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195925560.jpg
+2025-11-27 05:25:25,561 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195925561.jpg
+2025-11-27 05:25:26,410 - app.services.stream_capture - INFO - Stream capture active. Total frames: 100
+2025-11-27 05:25:26,561 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195926560.jpg
+2025-11-27 05:25:26,561 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195926561.jpg
+2025-11-27 05:25:27,583 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195927583.jpg
+2025-11-27 05:25:27,584 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195927583.jpg
+2025-11-27 05:25:28,651 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195928651.jpg
+2025-11-27 05:25:29,876 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195929876.jpg
+2025-11-27 05:25:29,876 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195929876.jpg
+2025-11-27 05:25:29,876 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195929876.jpg
+2025-11-27 05:25:31,110 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195931110.jpg
+2025-11-27 05:25:32,184 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195932184.jpg
+2025-11-27 05:25:32,185 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195932185.jpg
+INFO:     127.0.0.1:64438 - "GET /crops/person_1764195921196.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64439 - "GET /crops/person_1764195922196.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64440 - "GET /crops/person_1764195923311.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64441 - "GET /crops/person_1764195924560.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64443 - "GET /crops/person_1764195925561.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64442 - "GET /crops/person_1764195925560.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64438 - "GET /crops/person_1764195926561.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64439 - "GET /crops/person_1764195926560.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64441 - "GET /crops/person_1764195927583.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64440 - "GET /crops/person_1764195928651.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64443 - "GET /crops/person_1764195929876.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64442 - "GET /crops/person_1764195931110.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64438 - "GET /crops/person_1764195932184.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64439 - "GET /crops/person_1764195932185.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:33,333 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195933333.jpg
+2025-11-27 05:25:33,334 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195933334.jpg
+INFO:     127.0.0.1:64440 - "GET /crops/person_1764195933334.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64441 - "GET /crops/person_1764195933333.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:34,822 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195934822.jpg
+2025-11-27 05:25:34,823 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195934822.jpg
+INFO:     127.0.0.1:64443 - "GET /crops/person_1764195934822.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:36,133 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195936133.jpg
+2025-11-27 05:25:36,134 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195936134.jpg
+INFO:     127.0.0.1:64442 - "GET /crops/person_1764195936133.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64438 - "GET /crops/person_1764195936134.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:37,644 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195937644.jpg
+INFO:     127.0.0.1:64439 - "GET /crops/person_1764195937644.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:38,965 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195938964.jpg
+2025-11-27 05:25:38,965 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195938965.jpg
+INFO:     127.0.0.1:64443 - "GET /crops/person_1764195938964.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64442 - "GET /crops/person_1764195938965.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:40,273 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195940272.jpg
+2025-11-27 05:25:40,273 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195940273.jpg
+INFO:     127.0.0.1:64439 - "GET /crops/person_1764195940273.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64438 - "GET /crops/person_1764195940272.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:41,619 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195941618.jpg
+2025-11-27 05:25:41,620 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195941620.jpg
+INFO:     127.0.0.1:64443 - "GET /crops/person_1764195941618.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64442 - "GET /crops/person_1764195941620.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:42,900 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195942900.jpg
+2025-11-27 05:25:42,900 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195942900.jpg
+INFO:     127.0.0.1:64438 - "GET /crops/person_1764195942900.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:44,211 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195944211.jpg
+2025-11-27 05:25:44,212 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195944212.jpg
+INFO:     127.0.0.1:64439 - "GET /crops/person_1764195944211.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64443 - "GET /crops/person_1764195944212.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:45,540 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195945539.jpg
+2025-11-27 05:25:45,540 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195945540.jpg
+INFO:     127.0.0.1:64442 - "GET /crops/person_1764195945539.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64438 - "GET /crops/person_1764195945540.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:46,549 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195946548.jpg
+2025-11-27 05:25:46,550 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195946550.jpg
+INFO:     127.0.0.1:64439 - "GET /crops/person_1764195946548.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64443 - "GET /crops/person_1764195946550.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:47,947 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195947947.jpg
+2025-11-27 05:25:47,949 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195947949.jpg
+INFO:     127.0.0.1:64442 - "GET /crops/person_1764195947947.jpg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64438 - "GET /crops/person_1764195947949.jpg HTTP/1.1" 200 OK
+2025-11-27 05:25:49,059 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195949059.jpg
+2025-11-27 05:25:49,059 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195949059.jpg
+2025-11-27 05:25:49,060 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195949060.jpg
+2025-11-27 05:25:50,176 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195950175.jpg
+2025-11-27 05:25:50,176 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195950176.jpg
+2025-11-27 05:25:51,190 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195951190.jpg
+2025-11-27 05:25:51,191 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195951191.jpg
+2025-11-27 05:25:52,389 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195952389.jpg
+2025-11-27 05:25:53,703 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195953703.jpg
+2025-11-27 05:25:53,704 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195953704.jpg
+2025-11-27 05:25:53,704 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195953704.jpg
+2025-11-27 05:25:54,871 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195954871.jpg
+2025-11-27 05:25:54,872 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195954871.jpg
+2025-11-27 05:25:54,872 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195954872.jpg
+2025-11-27 05:25:56,779 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195956779.jpg
+2025-11-27 05:25:56,780 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195956780.jpg
+2025-11-27 05:25:56,781 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195956780.jpg
+2025-11-27 05:25:58,798 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195958798.jpg
+2025-11-27 05:25:58,798 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195958798.jpg
+2025-11-27 05:25:58,798 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195958798.jpg
+2025-11-27 05:26:01,011 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195961011.jpg
+2025-11-27 05:26:01,016 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195961016.jpg
+2025-11-27 05:26:01,017 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195961017.jpg
+2025-11-27 05:26:02,963 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195962963.jpg
+2025-11-27 05:26:02,964 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195962964.jpg
+2025-11-27 05:26:02,964 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195962964.jpg
+2025-11-27 05:26:05,264 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195965263.jpg
+2025-11-27 05:26:05,265 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195965264.jpg
+2025-11-27 05:26:05,265 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195965265.jpg
+2025-11-27 05:26:07,185 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195967185.jpg
+2025-11-27 05:26:07,186 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195967186.jpg
+2025-11-27 05:26:07,186 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195967186.jpg
+2025-11-27 05:26:09,411 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195969411.jpg
+2025-11-27 05:26:09,412 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195969412.jpg
+2025-11-27 05:26:11,624 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195971624.jpg
+2025-11-27 05:26:11,625 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195971625.jpg
+2025-11-27 05:26:11,625 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195971625.jpg
+2025-11-27 05:26:13,561 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195973561.jpg
+2025-11-27 05:26:13,562 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195973562.jpg
+2025-11-27 05:26:13,563 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195973562.jpg
+2025-11-27 05:26:15,371 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195975371.jpg
+2025-11-27 05:26:15,371 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195975371.jpg
+2025-11-27 05:26:16,989 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195976989.jpg
+2025-11-27 05:26:16,990 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195976989.jpg
+2025-11-27 05:26:19,113 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195979113.jpg
+2025-11-27 05:26:21,136 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195981136.jpg
+2025-11-27 05:26:22,867 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195982867.jpg
+2025-11-27 05:26:25,680 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764195985680.jpg
+2025-11-27 05:26:58,233 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196018233.jpg
+2025-11-27 05:27:00,156 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196020156.jpg
+2025-11-27 05:27:02,168 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196022167.jpg
+2025-11-27 05:27:04,241 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196024240.jpg
+2025-11-27 05:27:06,313 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196026313.jpg
+2025-11-27 05:27:08,123 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196028122.jpg
+2025-11-27 05:27:08,124 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196028123.jpg
+2025-11-27 05:27:10,260 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196030260.jpg
+2025-11-27 05:27:12,486 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196032485.jpg
+2025-11-27 05:27:14,596 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196034596.jpg
+2025-11-27 05:27:16,821 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196036820.jpg
+2025-11-27 05:27:21,766 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196041766.jpg
+2025-11-27 05:27:24,281 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196044280.jpg
+2025-11-27 05:27:26,007 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196046003.jpg
+2025-11-27 05:27:28,429 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196048429.jpg
+2025-11-27 05:27:29,239 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196049239.jpg
+2025-11-27 05:27:30,142 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196050142.jpg
+2025-11-27 05:27:31,964 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196051963.jpg
+2025-11-27 05:27:33,168 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196053168.jpg
+2025-11-27 05:27:34,484 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196054483.jpg
+2025-11-27 05:27:35,799 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196055799.jpg
+2025-11-27 05:27:43,272 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196063272.jpg
+2025-11-27 05:27:52,558 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196072557.jpg
+2025-11-27 05:28:00,681 - app.services.stream_capture - INFO - Stream capture active. Total frames: 200
+2025-11-27 05:28:00,732 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196080731.jpg
+2025-11-27 05:28:09,718 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196089718.jpg
+2025-11-27 05:28:32,754 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196112752.jpg
+2025-11-27 05:28:34,363 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196114363.jpg
+2025-11-27 05:28:34,364 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196114363.jpg
+2025-11-27 05:28:35,863 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196115863.jpg
+2025-11-27 05:28:37,793 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196117793.jpg
+2025-11-27 05:28:39,705 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196119705.jpg
+2025-11-27 05:28:41,520 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196121520.jpg
+2025-11-27 05:28:43,441 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196123441.jpg
+2025-11-27 05:28:45,566 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196125566.jpg
+2025-11-27 05:28:47,784 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196127783.jpg
+2025-11-27 05:28:50,104 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196130104.jpg
+2025-11-27 05:28:52,231 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196132230.jpg
+2025-11-27 05:28:54,051 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196134051.jpg
+2025-11-27 05:28:54,052 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196134051.jpg
+2025-11-27 05:28:55,771 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196135770.jpg
+2025-11-27 05:28:55,771 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196135771.jpg
+2025-11-27 05:28:57,283 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196137282.jpg
+2025-11-27 05:28:57,283 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196137283.jpg
+2025-11-27 05:28:58,998 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196138998.jpg
+2025-11-27 05:28:58,998 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196138998.jpg
+2025-11-27 05:29:00,626 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196140626.jpg
+2025-11-27 05:29:00,627 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196140627.jpg
+2025-11-27 05:29:02,572 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196142572.jpg
+2025-11-27 05:29:02,572 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196142572.jpg
+2025-11-27 05:29:04,548 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196144547.jpg
+2025-11-27 05:29:04,548 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196144548.jpg
+2025-11-27 05:29:06,477 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196146476.jpg
+2025-11-27 05:29:06,477 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196146477.jpg
+2025-11-27 05:29:08,642 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196148642.jpg
+2025-11-27 05:29:08,643 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196148643.jpg
+2025-11-27 05:29:11,033 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196151033.jpg
+2025-11-27 05:29:11,034 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196151033.jpg
+2025-11-27 05:29:13,548 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196153548.jpg
+2025-11-27 05:29:13,549 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196153549.jpg
+2025-11-27 05:29:15,667 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196155667.jpg
+2025-11-27 05:29:15,668 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196155668.jpg
+2025-11-27 05:29:17,188 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196157188.jpg
+2025-11-27 05:29:17,189 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196157189.jpg
+2025-11-27 05:29:18,300 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196158299.jpg
+2025-11-27 05:29:19,106 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196159105.jpg
+2025-11-27 05:29:19,107 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196159106.jpg
+2025-11-27 05:29:19,810 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196159810.jpg
+2025-11-27 05:29:21,527 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196161527.jpg
+2025-11-27 05:29:21,528 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196161528.jpg
+2025-11-27 05:29:22,332 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196162332.jpg
+2025-11-27 05:29:23,136 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196163136.jpg
+2025-11-27 05:29:23,137 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196163137.jpg
+2025-11-27 05:29:23,961 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196163960.jpg
+2025-11-27 05:29:24,650 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196164650.jpg
+2025-11-27 05:29:24,651 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196164651.jpg
+2025-11-27 05:29:25,366 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196165365.jpg
+2025-11-27 05:29:25,366 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196165366.jpg
+2025-11-27 05:29:26,477 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196166476.jpg
+2025-11-27 05:29:26,478 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196166477.jpg
+2025-11-27 05:29:27,486 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196167486.jpg
+2025-11-27 05:29:27,487 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196167487.jpg
+2025-11-27 05:29:28,189 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196168189.jpg
+2025-11-27 05:29:29,004 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196169004.jpg
+2025-11-27 05:29:34,241 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196174241.jpg
+2025-11-27 05:29:35,656 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196175656.jpg
+2025-11-27 05:29:38,588 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196178588.jpg
+2025-11-27 05:29:40,506 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196180505.jpg
+2025-11-27 05:29:54,640 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196194639.jpg
+2025-11-27 05:29:55,949 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196195949.jpg
+2025-11-27 05:29:57,571 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196197571.jpg
+2025-11-27 05:29:59,304 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196199304.jpg
+2025-11-27 05:30:01,013 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196201013.jpg
+2025-11-27 05:30:03,039 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196203038.jpg
+2025-11-27 05:30:04,853 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196204852.jpg
+2025-11-27 05:30:12,928 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196212927.jpg
+2025-11-27 05:30:14,743 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196214743.jpg
+2025-11-27 05:30:19,295 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196219295.jpg
+2025-11-27 05:30:20,604 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196220603.jpg
+2025-11-27 05:30:21,924 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196221924.jpg
+2025-11-27 05:30:23,035 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196223035.jpg
+2025-11-27 05:30:24,646 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196224645.jpg
+2025-11-27 05:30:25,896 - app.services.stream_capture - INFO - Stream capture active. Total frames: 300
+2025-11-27 05:30:25,961 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196225961.jpg
+2025-11-27 05:30:27,379 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196227379.jpg
+2025-11-27 05:30:28,689 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196228689.jpg
+2025-11-27 05:30:29,817 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196229817.jpg
+2025-11-27 05:30:30,819 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196230819.jpg
+2025-11-27 05:30:31,922 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196231922.jpg
+2025-11-27 05:30:33,036 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196233035.jpg
+2025-11-27 05:30:34,249 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196234249.jpg
+2025-11-27 05:30:35,546 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196235546.jpg
+2025-11-27 05:30:36,562 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196236562.jpg
+2025-11-27 05:30:37,971 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196237971.jpg
+2025-11-27 05:30:39,188 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196239188.jpg
+2025-11-27 05:30:40,604 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196240603.jpg
+2025-11-27 05:30:43,627 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196243626.jpg
+2025-11-27 05:30:45,345 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196245345.jpg
+2025-11-27 05:30:45,346 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196245346.jpg
+2025-11-27 05:30:47,033 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196247032.jpg
+2025-11-27 05:30:47,038 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196247038.jpg
+2025-11-27 05:30:48,489 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196248487.jpg
+2025-11-27 05:30:48,498 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196248494.jpg
+2025-11-27 05:30:50,113 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196250113.jpg
+2025-11-27 05:30:50,114 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196250114.jpg
+2025-11-27 05:30:51,718 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196251718.jpg
+2025-11-27 05:30:51,720 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196251719.jpg
+2025-11-27 05:30:53,438 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196253437.jpg
+2025-11-27 05:30:53,438 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196253438.jpg
+2025-11-27 05:30:55,043 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196255043.jpg
+2025-11-27 05:30:55,043 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196255043.jpg
+2025-11-27 05:30:56,771 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196256770.jpg
+2025-11-27 05:30:56,771 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196256771.jpg
+2025-11-27 05:30:58,273 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196258273.jpg
+2025-11-27 05:30:58,273 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196258273.jpg
+2025-11-27 05:30:59,787 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196259787.jpg
+2025-11-27 05:31:01,303 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196261303.jpg
+2025-11-27 05:31:02,919 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196262919.jpg
+2025-11-27 05:31:04,335 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196264334.jpg
+2025-11-27 05:31:04,335 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196264335.jpg
+2025-11-27 05:31:05,660 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196265660.jpg
+2025-11-27 05:31:06,856 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196266856.jpg
+2025-11-27 05:31:08,370 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196268369.jpg
+2025-11-27 05:31:08,370 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196268370.jpg
+2025-11-27 05:31:09,787 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196269787.jpg
+2025-11-27 05:31:11,106 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196271106.jpg
+2025-11-27 05:31:12,613 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196272612.jpg
+2025-11-27 05:31:12,613 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196272613.jpg
+2025-11-27 05:31:14,067 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196274067.jpg
+2025-11-27 05:31:14,068 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196274068.jpg
+2025-11-27 05:31:15,855 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196275853.jpg
+2025-11-27 05:31:15,855 - app.services.image_processor - INFO - New unique person detected! Saved to /Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/app/crops/person_1764196275855.jpg

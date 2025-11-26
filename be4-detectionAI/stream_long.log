@@ -1,0 +1,31 @@
+Connecting to http://200.46.196.243/mjpg/video.mjpg...
+Stream opened. Reading 50 frames...
+Frame 0 read successfully in 0.0046s
+Frame 1 read successfully in 0.4317s
+Frame 2 read successfully in 1.4333s
+Frame 3 read successfully in 0.4741s
+Frame 4 read successfully in 2.0891s
+Frame 5 read successfully in 0.5987s
+Frame 6 read successfully in 1.0165s
+Frame 7 read successfully in 0.6855s
+Frame 8 read successfully in 0.6694s
+Frame 9 read successfully in 0.8529s
+Frame 10 read successfully in 0.7711s
+Frame 11 read successfully in 0.7294s
+Frame 12 read successfully in 1.1935s
+Frame 13 read successfully in 0.9029s
+Frame 14 read successfully in 0.8000s
+Frame 15 read successfully in 1.1660s
+Frame 16 read successfully in 0.9815s
+Frame 17 read successfully in 0.9655s
+Frame 18 read successfully in 1.0369s
+Frame 19 read successfully in 0.9684s
+Frame 20 read successfully in 0.9460s
+Frame 21 read successfully in 0.9421s
+Frame 22 read successfully in 1.0682s
+Frame 23 read successfully in 1.1061s
+Traceback (most recent call last):
+  File "/Users/azmi/Productive/KP/AI-FRSS-dash/be4-detectionAI/test_stream_long.py", line 17, in <module>
+    ret, frame = cap.read()
+                 ^^^^^^^^^^
+KeyboardInterrupt
