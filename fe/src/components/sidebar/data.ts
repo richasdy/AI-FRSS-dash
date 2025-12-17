@@ -1,4 +1,4 @@
-import { Bell, ChartBarIncreasing, LayoutDashboard, Play, Radio, User, Video } from "@lucide/svelte";
+import { Bell, ChartBarIncreasing, CreditCard, LayoutDashboard, Play, Radio, User, Video } from "@lucide/svelte";
 import type { MenuItem } from "./types";
 
 export const singleMenuItems: MenuItem[] = [
@@ -14,6 +14,11 @@ export const mainMenuItems: MenuItem[] = [
         label: 'Live Monitoring',
         icon: Radio,
         link: '/live-monitoring'
+    },
+    {
+        label: 'RFID Access',
+        icon: CreditCard,
+        link: '/rfid-access'
     },
     {
         label: 'Alert & Notification',
