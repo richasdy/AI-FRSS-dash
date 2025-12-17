@@ -9,9 +9,11 @@ services:
   fe:
     build: ./fe
     ports:
-      - "5173:5173"
+      - "80:5173"
     volumes:
       - ./fe/logs:/app/logs
+
+      
 
   # detection-ai:
   #   build:
