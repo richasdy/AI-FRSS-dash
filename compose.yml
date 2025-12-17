@@ -12,3 +12,14 @@ services:
       - "5173:5173"
     volumes:
       - ./fe/logs:/app/logs
+
+  detection-ai:
+    build:
+      context: ./be4-detectionAI
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:     
+      - ./be4-detectionAI/yolo_models:/app/yolo_models      
+      - ./be4-detectionAI/app/crops:/app/app/crops
+    restart: unless-stopped

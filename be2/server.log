@@ -1,0 +1,36 @@
+/Users/azmi/.pyenv/versions/3.11.2/lib/python3.11/site-packages/pydantic/_internal/_fields.py:161: UserWarning: Field "model_type" has conflict with protected namespace "model_".
+
+You may be able to resolve this warning by setting `model_config['protected_namespaces'] = ()`.
+  warnings.warn(
+/Users/azmi/.pyenv/versions/3.11.2/lib/python3.11/site-packages/pydantic/_internal/_fields.py:161: UserWarning: Field "model_types" has conflict with protected namespace "model_".
+
+You may be able to resolve this warning by setting `model_config['protected_namespaces'] = ()`.
+  warnings.warn(
+/Users/azmi/.pyenv/versions/3.11.2/lib/python3.11/site-packages/pydantic/_internal/_fields.py:161: UserWarning: Field "model_file" has conflict with protected namespace "model_".
+
+You may be able to resolve this warning by setting `model_config['protected_namespaces'] = ()`.
+  warnings.warn(
+INFO:     Will watch for changes in these directories: ['/Users/azmi/Productive/KP/AI-FRSS-dash/be2']
+INFO:     Uvicorn running on http://127.0.0.1:8080 (Press CTRL+C to quit)
+INFO:     Started reloader process [37990] using WatchFiles
+/Users/azmi/.pyenv/versions/3.11.2/lib/python3.11/site-packages/pydantic/_internal/_fields.py:161: UserWarning: Field "model_type" has conflict with protected namespace "model_".
+
+You may be able to resolve this warning by setting `model_config['protected_namespaces'] = ()`.
+  warnings.warn(
+/Users/azmi/.pyenv/versions/3.11.2/lib/python3.11/site-packages/pydantic/_internal/_fields.py:161: UserWarning: Field "model_types" has conflict with protected namespace "model_".
+
+You may be able to resolve this warning by setting `model_config['protected_namespaces'] = ()`.
+  warnings.warn(
+/Users/azmi/.pyenv/versions/3.11.2/lib/python3.11/site-packages/pydantic/_internal/_fields.py:161: UserWarning: Field "model_file" has conflict with protected namespace "model_".
+
+You may be able to resolve this warning by setting `model_config['protected_namespaces'] = ()`.
+  warnings.warn(
+INFO:     Started server process [38041]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:55046 - "GET /health HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [38041]
+INFO:     Stopping reloader process [37990]
