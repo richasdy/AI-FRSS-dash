@@ -3,7 +3,7 @@
 	import { ref, onValue } from 'firebase/database';
 	import { db } from '$lib/firebase';
 	import Breadcrumb from '../../../components/breadcrumb/Breadcrumb.svelte';
-	import { Radio } from 'lucide-svelte';
+	import { Radio, Search } from 'lucide-svelte';
 
 	interface RfidLog {
 		id: string;
@@ -17,6 +17,31 @@
 
 	let logs: RfidLog[] = [];
 	let loading = true;
+
+	// Filter states
+	let searchQuery = '';
+	let selectedRfidSource = '';
+	let selectedTag = '';
+
+	// Derived values for dropdown options
+	$: uniqueRfidSources = [...new Set(logs.map((log) => log.rfidId))].sort();
+	$: uniqueTags = [...new Set(logs.map((log) => log.tag))].sort();
+
+	// Filter logic
+	$: filteredLogs = logs.filter((log) => {
+		const searchLower = searchQuery.toLowerCase();
+		const matchesSearch =
+			searchQuery === '' ||
+			log.tag.toLowerCase().includes(searchLower) ||
+			log.rfidId.toLowerCase().includes(searchLower) ||
+			log.date.includes(searchLower) ||
+			log.time.includes(searchLower);
+
+		const matchesRfid = selectedRfidSource === '' || log.rfidId === selectedRfidSource;
+		const matchesTag = selectedTag === '' || log.tag === selectedTag;
+
+		return matchesSearch && matchesRfid && matchesTag;
+	});
 
 	onMount(() => {
 		const rfidRef = ref(db, '/');
@@ -63,6 +88,43 @@
 <div class="flex flex-col gap-y-6">
 	<Breadcrumb pageName="RFID Access Logs" />
 
+	<!-- Search and Filter Controls -->
+	<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+		<div class="relative w-full md:w-64">
+			<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+				<Search class="h-5 w-5 text-gray-500" />
+			</div>
+			<input
+				type="text"
+				bind:value={searchQuery}
+				class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-brand-500 dark:focus:ring-brand-500"
+				placeholder="Search logs..."
+			/>
+		</div>
+
+		<div class="flex flex-col gap-2 sm:flex-row">
+			<select
+				bind:value={selectedRfidSource}
+				class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-brand-500 dark:focus:ring-brand-500 sm:w-48"
+			>
+				<option value="">All Sources</option>
+				{#each uniqueRfidSources as source}
+					<option value={source}>{source}</option>
+				{/each}
+			</select>
+
+			<select
+				bind:value={selectedTag}
+				class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-brand-500 dark:focus:ring-brand-500 sm:w-48"
+			>
+				<option value="">All Tags</option>
+				{#each uniqueTags as tag}
+					<option value={tag}>{tag}</option>
+				{/each}
+			</select>
+		</div>
+	</div>
+
 	<div class="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
 		<div class="max-w-full overflow-x-auto">
 			<table class="min-w-full bg-transparent text-left text-sm text-gray-900 dark:text-gray-100">
@@ -83,8 +145,12 @@
 						<tr>
 							<td colspan="4" class="px-5 py-4 text-center text-gray-500">No logs found</td>
 						</tr>
+					{:else if filteredLogs.length === 0}
+						<tr>
+							<td colspan="4" class="px-5 py-4 text-center text-gray-500">No matching logs found</td>
+						</tr>
 					{:else}
-						{#each logs as log (log.id)}
+						{#each filteredLogs as log (log.id)}
 							<tr class="hover:bg-gray-50 dark:hover:bg-white/[0.03]">
 								<td class="px-5 py-4 whitespace-nowrap">
 									<div class="flex flex-col">
