@@ -2,11 +2,11 @@ FROM node:lts
 
 WORKDIR /app
 
-COPY . /app
-
+COPY package.json package-lock.json ./
 RUN npm install
 
-CMD ["sh", "-c", "npm run dev > /app/logs/app.log 2>&1"]
+COPY . .
 
+EXPOSE 3000
 
-
+CMD ["npm", "run", "dev"]
