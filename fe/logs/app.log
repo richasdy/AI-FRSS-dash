@@ -2,7 +2,7 @@ yarn run v1.22.22
 $ vite dev
 You have specified a baseUrl and/or paths in your tsconfig.json which interferes with SvelteKit's auto-generated tsconfig.json. Remove it to avoid problems with intellisense. For path aliases, use `kit.alias` instead: https://svelte.dev/docs/kit/configuration#alias
 
-  VITE v6.3.5  ready in 1187 ms
+  VITE v6.3.5  ready in 793 ms
 
   ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
