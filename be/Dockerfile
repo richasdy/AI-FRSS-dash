@@ -7,6 +7,10 @@ RUN npm install
 
 COPY . .
 
+# Build TypeScript
+RUN npm run build
+
 EXPOSE 3000
 
-CMD ["npm", "run", "dev"]
+# Run production build
+CMD ["npm", "start"]
