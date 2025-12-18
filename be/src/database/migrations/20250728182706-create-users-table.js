@@ -32,11 +32,11 @@ module.exports = {
         onDelete: 'SET NULL',
         field: 'role_id',
       },
-      createdAt: {
+      created_at: {
         allowNull: false,
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
         allowNull: false,
         type: Sequelize.DATE
       }

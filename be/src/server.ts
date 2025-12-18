@@ -20,9 +20,9 @@ const corsOptions = {
     allowedHeaders: [
         'Content-Type', 
         'Authorization', 
-        'Cache-Control', // Tambahkan ini
-        'Pragma',        // Tambahkan ini
-        'If-Modified-Since' // Tambahkan ini
+        'Cache-Control', 
+        'Pragma',
+        'If-Modified-Since'
     ],
     optionsSuccessStatus: 200,
 };
