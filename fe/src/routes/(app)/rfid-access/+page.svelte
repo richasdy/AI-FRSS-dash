@@ -3,7 +3,7 @@
 	import { ref, onValue } from 'firebase/database';
 	import { db } from '$lib/firebase';
 	import Breadcrumb from '../../../components/breadcrumb/Breadcrumb.svelte';
-	import { Radio, Search } from 'lucide-svelte';
+	import { Radio, Search, ChevronDown, Filter } from 'lucide-svelte';
 
 	interface RfidLog {
 		id: string;
@@ -89,39 +89,54 @@
 	<Breadcrumb pageName="RFID Access Logs" />
 
 	<!-- Search and Filter Controls -->
-	<div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-		<div class="relative w-full md:w-64">
+	<div class="flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03] md:flex-row md:items-center md:justify-between">
+		<div class="relative w-full md:w-72">
 			<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-				<Search class="h-5 w-5 text-gray-500" />
+				<Search class="h-5 w-5 text-gray-400" />
 			</div>
 			<input
 				type="text"
 				bind:value={searchQuery}
-				class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pl-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-brand-500 dark:focus:ring-brand-500"
-				placeholder="Search logs..."
+				class="block w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 focus:border-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:text-white dark:focus:border-brand-500 dark:focus:ring-brand-500"
+				placeholder="Search by tag, source, or date..."
 			/>
 		</div>
 
-		<div class="flex flex-col gap-2 sm:flex-row">
-			<select
-				bind:value={selectedRfidSource}
-				class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-brand-500 dark:focus:ring-brand-500 sm:w-48"
-			>
-				<option value="">All Sources</option>
-				{#each uniqueRfidSources as source}
-					<option value={source}>{source}</option>
-				{/each}
-			</select>
+		<div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+			<div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 sm:hidden">
+				<Filter class="h-4 w-4" />
+				<span>Filters:</span>
+			</div>
+			
+			<div class="relative w-full sm:w-48">
+				<select
+					bind:value={selectedRfidSource}
+					class="block w-full appearance-none rounded-lg border border-gray-200 bg-transparent py-2.5 pl-4 pr-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:text-white dark:focus:border-brand-500 dark:focus:ring-brand-500"
+				>
+					<option value="">All Sources</option>
+					{#each uniqueRfidSources as source}
+						<option value={source}>{source}</option>
+					{/each}
+				</select>
+				<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+					<ChevronDown class="h-4 w-4 text-gray-500" />
+				</div>
+			</div>
 
-			<select
-				bind:value={selectedTag}
-				class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-brand-500 focus:ring-brand-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-brand-500 dark:focus:ring-brand-500 sm:w-48"
-			>
-				<option value="">All Tags</option>
-				{#each uniqueTags as tag}
-					<option value={tag}>{tag}</option>
-				{/each}
-			</select>
+			<div class="relative w-full sm:w-48">
+				<select
+					bind:value={selectedTag}
+					class="block w-full appearance-none rounded-lg border border-gray-200 bg-transparent py-2.5 pl-4 pr-10 text-sm text-gray-900 focus:border-brand-500 focus:ring-brand-500 dark:border-gray-700 dark:text-white dark:focus:border-brand-500 dark:focus:ring-brand-500"
+				>
+					<option value="">All Tags</option>
+					{#each uniqueTags as tag}
+						<option value={tag}>{tag}</option>
+					{/each}
+				</select>
+				<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+					<ChevronDown class="h-4 w-4 text-gray-500" />
+				</div>
+			</div>
 		</div>
 	</div>
 
