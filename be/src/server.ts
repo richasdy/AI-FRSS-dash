@@ -15,9 +15,14 @@ const appServer = express();
 const port = Number(PORT) || 3000;
 
 const corsOptions = {
-    origin: '*',
+    origin: '*', // Atau spesifik domain FE kamu
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     optionsSuccessStatus: 200,
 };
+
+appServer.use(cors(corsOptions));
+appServer.options('*', cors(corsOptions));
 
 appServer.use((req, res, next) => {
     const startTime = Date.now();
@@ -37,10 +42,6 @@ appServer.use((req, res, next) => {
 
     next();
 });
-
-// Enable CORS
-appServer.use(cors(corsOptions));
-appServer.options('*', cors(corsOptions));
 
 // Middleware for parsing JSON and URL-encoded bodies
 appServer.use(express.json());
