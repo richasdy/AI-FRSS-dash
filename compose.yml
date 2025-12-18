@@ -11,12 +11,11 @@ services:
     restart: unless-stopped
 
   fe:
-    build:
-      context: ./fe
-      args:
-        VITE_API_BASE_URL: /api
+    build: ./fe
     ports:
-      - "80:80"
+      - "80:5173"
+    environment:
+      - VITE_API_BASE_URL=http://3.151.122.191:3000/api
     depends_on:
       - be
     restart: unless-stopped
