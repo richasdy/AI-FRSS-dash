@@ -15,9 +15,15 @@ const appServer = express();
 const port = Number(PORT) || 3000;
 
 const corsOptions = {
-    origin: '*', // Atau spesifik domain FE kamu
+    origin: '*', 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: [
+        'Content-Type', 
+        'Authorization', 
+        'Cache-Control', // Tambahkan ini
+        'Pragma',        // Tambahkan ini
+        'If-Modified-Since' // Tambahkan ini
+    ],
     optionsSuccessStatus: 200,
 };
 
