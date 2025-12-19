@@ -24,25 +24,30 @@
 	let selectedTag = '';
 
 	// Derived values for dropdown options
-	$: uniqueRfidSources = [...new Set(logs.map((log) => log.rfidId))].sort();
-	$: uniqueTags = [...new Set(logs.map((log) => log.tag))].sort();
+	$: uniqueRfidSources = [...new Set(logs.map((log) => log.rfidId).filter(Boolean))].sort();
+    $: uniqueTags = [...new Set(logs.map((log) => log.tag).filter(Boolean))].sort();
 
-	// Filter logic
-	$: filteredLogs = logs.filter((log) => {
-		const searchLower = searchQuery.toLowerCase();
-		const matchesSearch =
-			searchQuery.length < 3 ||
-			log.tag.toLowerCase().includes(searchLower) ||
-			log.rfidId.toLowerCase().includes(searchLower) ||
-			log.date.includes(searchLower) ||
-			log.time.includes(searchLower) ||
-			String(log.rssi).includes(searchLower);
+    // Filter logic
+    $: filteredLogs = logs.filter((log) => {
+        const searchLower = searchQuery.toLowerCase();
+        
+        // Helper function untuk cek data dengan aman (mencegah error jika data kosong/undefined)
+        const safeIncludes = (val: any) => 
+            String(val || '').toLowerCase().includes(searchLower);
 
-		const matchesRfid = selectedRfidSource === '' || log.rfidId === selectedRfidSource;
-		const matchesTag = selectedTag === '' || log.tag === selectedTag;
+        const matchesSearch =
+            searchQuery.length < 3 ||
+            safeIncludes(log.tag) ||
+            safeIncludes(log.rfidId) ||
+            safeIncludes(log.date) ||
+            safeIncludes(log.time) ||
+            safeIncludes(log.rssi);
 
-		return matchesSearch && matchesRfid && matchesTag;
-	});
+        const matchesRfid = selectedRfidSource === '' || log.rfidId === selectedRfidSource;
+        const matchesTag = selectedTag === '' || log.tag === selectedTag;
+
+        return matchesSearch && matchesRfid && matchesTag;
+    });
 
 	onMount(() => {
 		const rfidRef = ref(db, '/');
