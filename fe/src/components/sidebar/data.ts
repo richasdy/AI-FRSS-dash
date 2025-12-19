@@ -10,31 +10,32 @@ export const singleMenuItems: MenuItem[] = [
 ];
 
 export const mainMenuItems: MenuItem[] = [
-    {
-        label: 'Live Monitoring',
-        icon: Radio,
-        link: '/live-monitoring'
-    },
+    // {
+    //     label: 'Live Monitoring',
+    //     icon: Radio,
+    //     link: '/live-monitoring'
+    // },
     {
         label: 'RFID Access',
         icon: CreditCard,
         link: '/rfid-access'
-    },
-    {
-        label: 'Alert & Notification',
-        icon: Bell,
-        link: '/alert-notification'
-    },
-    {
-        label: 'Video Playback',
-        icon: Play,
-        link: '/video-playback'
-    },
-    {
-        label: 'Report & Analytics',
-        icon: ChartBarIncreasing,
-        link: '/report-analytics'
-    },
+    }
+    // ,
+    // {
+    //     label: 'Alert & Notification',
+    //     icon: Bell,
+    //     link: '/alert-notification'
+    // },
+    // {
+    //     label: 'Video Playback',
+    //     icon: Play,
+    //     link: '/video-playback'
+    // },
+    // {
+    //     label: 'Report & Analytics',
+    //     icon: ChartBarIncreasing,
+    //     link: '/report-analytics'
+    // },
 ];
 
 export const masterMenuItems: MenuItem[] = [
