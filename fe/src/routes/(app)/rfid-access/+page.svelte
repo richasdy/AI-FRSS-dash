@@ -31,11 +31,12 @@
 	$: filteredLogs = logs.filter((log) => {
 		const searchLower = searchQuery.toLowerCase();
 		const matchesSearch =
-			searchQuery === '' ||
+			searchQuery.length < 3 ||
 			log.tag.toLowerCase().includes(searchLower) ||
 			log.rfidId.toLowerCase().includes(searchLower) ||
 			log.date.includes(searchLower) ||
-			log.time.includes(searchLower);
+			log.time.includes(searchLower) ||
+			String(log.rssi).includes(searchLower);
 
 		const matchesRfid = selectedRfidSource === '' || log.rfidId === selectedRfidSource;
 		const matchesTag = selectedTag === '' || log.tag === selectedTag;
