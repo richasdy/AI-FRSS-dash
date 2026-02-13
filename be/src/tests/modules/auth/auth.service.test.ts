@@ -97,6 +97,10 @@ describe('signUpService', () => {
             isApproved: false,
             created_at: new Date(),
             updated_at: new Date(),
+            roleId: null,
+            department: null,
+            isOnline: false,
+            lastLogin: null,
         };
 
         (repo.createUser as jest.Mock).mockResolvedValue(newUser);
@@ -118,6 +122,10 @@ describe('signInService', () => {
         isApproved: false,
         created_at: new Date(),
         updated_at: new Date(),
+        roleId: null,
+        department: null,
+        isOnline: false,
+        lastLogin: null,
     };
 
     it('should return user and accessToken if credentials are correct', async () => {

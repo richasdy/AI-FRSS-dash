@@ -21,7 +21,9 @@ export const authMiddleware = async (
 ) => {
     const { method, path } = req;
 
-    if (method === 'OPTIONS' || ['/api/auth/signin'].includes(path)) {
+    // Allow OPTIONS requests and public routes (signin/signup)
+    // Using endsWith to handle potential path prefixes like /api
+    if (method === 'OPTIONS' || path.endsWith('/auth/signin') || path.endsWith('/auth/signup')) {
         return next();
     }
 

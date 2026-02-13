@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+websockets
+opencv-python-headless
+ultralytics
+torch
+numpy
+scikit-image
+requests

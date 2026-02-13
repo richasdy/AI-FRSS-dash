@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+
+# IDEs and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Logs and artifacts
+*.log
+app/crops/*
+!app/crops/.gitkeep
+debug_frame.jpg
+PR_MESSAGE.md
+README.md
+
+# NOTE: YOLO model weights are required at runtime.
+# If you want smaller images, ignore these and mount `yolo_models/` as a volume instead.

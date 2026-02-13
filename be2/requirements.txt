@@ -5,8 +5,9 @@ python-dotenv==1.0.0
 # Database - PostgreSQL Only
 asyncpg==0.29.0
 databases[postgresql]==0.8.0
-sqlalchemy==1.4.46
+sqlalchemy>=2.0.0
 alembic==1.12.1
+aiosqlite>=0.17.0
 
 # FastAPI and server
 pydantic==2.8.0
@@ -24,6 +25,7 @@ Pillow==10.3.0
 # Image processing and utilities
 numpy>=1.24.0
 timm==1.0.3
+imagehash>=4.3.1
 
 # Authentication and Security
 bcrypt==4.0.1

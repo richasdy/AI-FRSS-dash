@@ -1,10 +1,12 @@
-# FROM yarnpkg/node-yarn:node7
 FROM node:lts
 
 WORKDIR /app
 
-COPY . /app
-
+COPY package.json yarn.lock ./
 RUN yarn install
 
-CMD ["sh", "-c", "yarn dev > /app/logs/app.log 2>&1"]
+COPY . .
+
+EXPOSE 5173
+
+CMD ["yarn", "dev", "--host"]

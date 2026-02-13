@@ -15,9 +15,20 @@ const appServer = express();
 const port = Number(PORT) || 3000;
 
 const corsOptions = {
-    origin: '*',
+    origin: '*', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: [
+        'Content-Type', 
+        'Authorization', 
+        'Cache-Control', 
+        'Pragma',
+        'If-Modified-Since'
+    ],
     optionsSuccessStatus: 200,
 };
+
+appServer.use(cors(corsOptions));
+appServer.options('*', cors(corsOptions));
 
 appServer.use((req, res, next) => {
     const startTime = Date.now();
@@ -38,10 +49,6 @@ appServer.use((req, res, next) => {
     next();
 });
 
-// Enable CORS
-appServer.use(cors(corsOptions));
-appServer.options('*', cors(corsOptions));
-
 // Middleware for parsing JSON and URL-encoded bodies
 appServer.use(express.json());
 appServer.use(express.urlencoded({ extended: true }));
@@ -60,8 +67,8 @@ DB.sequelize
     .authenticate()
     .then(() => {
         logger.info('Database connected successfully!');
-        appServer.listen(port, '127.0.0.1', () => {
-            logger.info(`Server is running on http://127.0.0.1:${port}`);
+        appServer.listen(port, '0.0.0.0', () => {
+            logger.info(`Server is running on http://0.0.0.0:${port}`);
         });
         
     })

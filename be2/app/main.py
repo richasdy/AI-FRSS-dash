@@ -17,6 +17,7 @@ if be2_dir not in sys.path:
 # Import core components
 from app.core.config import settings
 from app.core.websocket_handler import handle_websocket_connection
+from app.services.people_detection_service import people_detection_service
 
 # Create FastAPI app
 app = FastAPI(
@@ -50,6 +51,20 @@ async def health_check():
         "version": settings.VERSION,
         "project": settings.PROJECT_NAME
     }
+
+@app.post("/services/people-detection/start")
+async def start_people_detection():
+    people_detection_service.start()
+    return {"status": "started"}
+
+@app.post("/services/people-detection/stop")
+async def stop_people_detection():
+    people_detection_service.stop()
+    return {"status": "stopped"}
+
+@app.get("/services/people-detection/status")
+async def get_people_detection_status():
+    return {"running": people_detection_service.is_running}
 
 # WebSocket endpoints
 @app.websocket("/ws")

@@ -5,6 +5,7 @@ import roleModel from './models/role.model';
 import monitoringModel from './models/monitoring.model';
 import alertModel from './models/alert.model';
 import recordingModel from './models/recording.model';
+import detectionModel from './models/detection.model';
 import { NODE_ENV } from '@/config';
 import path from 'path';
 
@@ -38,6 +39,7 @@ export const DB = {
     Monitoring: monitoringModel(sequelize),
     Alerts: alertModel(sequelize),
     Recordings: recordingModel(sequelize), 
+    Detections: detectionModel(sequelize),
     sequelize,
     Sequelize,
 };

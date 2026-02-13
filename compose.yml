@@ -6,9 +6,30 @@ services:
       - "3000:3000"
     volumes:
       - ./be/logs:/app/logs
+    env_file:
+      - ./be/.env
+    restart: unless-stopped
+
   fe:
     build: ./fe
     ports:
-      - "5173:5173"
-    volumes:
-      - ./fe/logs:/app/logs
+      - "80:5173"
+    environment:
+      - VITE_API_BASE_URL=http://3.151.122.191:3000/api
+    depends_on:
+      - be
+    restart: unless-stopped
+
+
+      
+
+  # detection-ai:
+  #   build:
+  #     context: ./be4-detectionAI
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8000:8000"
+  #   volumes:     
+  #     - ./be4-detectionAI/yolo_models:/app/yolo_models      
+  #     - ./be4-detectionAI/app/crops:/app/app/crops
+  #   restart: unless-stopped
